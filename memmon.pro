@@ -1,3 +1,6 @@
+!win32{
+ error("Memmon can only be run on windows !")
+}
 INCLUDEPATH = .
 DEPENDPATH = .
 
