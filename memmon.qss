@@ -1,0 +1,162 @@
+/* custom QMenu style */ 
+QMenu {
+
+    background-color: rgb(233,233,233);
+    spacing:4px;
+    border:1px solid rgb(122,122,122);
+
+}
+
+QMenu::item:selected {
+    font:bold;
+    background: rgba(100, 100, 100, 150);
+}
+
+QMenu::item:hover
+{
+  font:bold;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: rgb(174,174,174);
+    margin-left: 1px;
+    margin-right: 1px;
+
+}
+
+/* custom QMenuBar */
+QMenuBar {
+    background-color: qlineargradient(x1:0 , y1:0, x2:0,y2:1, stop:0 rgb(233,233,233), stop:1 rgb(211,211,211));
+
+    /* qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop:0 rgb(183,183,183), stop:0.2 rgb(112,112,112), stop:1 rgb(105,105,105)); */
+    color:black;
+
+}
+
+QMenuBar::item {
+     spacing: 5px; /* spacing between menu bar items */
+     padding: 1px 4px;
+     background: transparent;
+     border-radius: 2px;
+     color:black;
+     font:bold;
+}
+
+QMenuBar::item:selected { /* when selected using mouse or keyboard */
+     background: qlineargradient(x1:0 , y1:0, x2:0,y2:1, stop:0 rgb(123,123,123), stop:1 rgb(145,145,145));
+     color:white;
+     font:bold;
+
+}
+
+QMenuBar::item:pressed {
+    background: #888888;
+}
+
+/* custom QStatusBar */
+QStatusBar {
+
+    background-color: rgba(198,198,198,150);
+
+}
+
+QStatusBar::item {
+
+     border: 1px solid rgb(174,174,174);
+     border-radius: 3px;
+
+}
+
+/* custom QTabWidget */
+QTabWidget::tab-bar {
+     alignment: left;
+}
+QTabWidget::pane { /* The tab widget frame */
+     border-top: 2px solid #C2C7CB;
+ }
+
+ QTabWidget::tab-bar {
+     left: 5px; /* move to the right by 5px */
+ }
+
+ /* Style the tab using the tab sub-control. Note that
+     it reads QTabBar _not_ QTabWidget */
+ QTabBar::tab {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+     border: 1px solid #C4C4C3;
+     border-bottom-color: #C2C7CB; /* same as the pane color */
+     border-top-left-radius: 4px;
+     border-top-right-radius: 4px;
+     min-width: 8ex;
+     padding: 2px;
+ }
+
+ QTabBar::tab:selected, QTabBar::tab:hover {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #fafafa, stop: 0.4 #f4f4f4,
+                                 stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);
+ }
+
+ QTabBar::tab:selected {
+     border-color: #9B9B9B;
+     border-bottom-color: #C2C7CB; /* same as pane color */
+ }
+
+ QTabBar::tab:!selected {
+     margin-top: 2px; /* make non-selected tabs look smaller */
+ }
+
+/* custom QPushButton */
+QPushButton {
+
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
+}
+
+QPushButton:pressed {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #dadbde, stop: 1 #f6f7fa);
+ }
+
+/* custom QHeaderView */
+QHeaderView::section {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgb(243,243,243), stop:1 rgb(221,221,221));
+    color: black;
+}
+
+QHeaderView {
+
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(250,250,250), stop:0.5 rgb(250,250,250), stop:1 rgb(233,233,233));
+
+}
+
+QMainWindow::separator {
+     background: lightgray;
+     width: 1px; /* when vertical */
+     height: 1px; /* when horizontal */
+}
+QMainWindow::separator:hover {
+     background: lightgray;
+}
+
+ QToolBar {
+     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(244,244,244), stop:0.4 rgb(240,240,240), stop:0.6 rgb(230,230,230), stop:1.0 rgb(225,225,225));
+     spacing: 3px; /* spacing between items in the tool bar */
+ }
+
+QDockWidget::title {
+     text-align: left; /* align the text to the left */
+     background: lightgray;
+     padding-left: 5px;
+     border:1px solid rgb(122,122,122);
+ }
+
+
+QTextEdit
+{
+  background-color:rgb(233,233,233);
+}

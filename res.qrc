@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/classes.txt</file>
+        <file>images/clear.png</file>
+        <file>images/save.png</file>
+        <file>memmon.qss</file>
+        <file>images/process.png</file>
+        <file>images/start_query.png</file>
+        <file>images/stop_query.png</file>
+        <file>images/open.png</file>
+        <file>images/pin.png</file>
+        <file>images/chart.png</file>
+        <file>images/close.png</file>
+    </qresource>
+</RCC>
