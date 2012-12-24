@@ -11,5 +11,6 @@
         <file>images/pin.png</file>
         <file>images/chart.png</file>
         <file>images/close.png</file>
+        <file>images/export_image.png</file>
     </qresource>
 </RCC>

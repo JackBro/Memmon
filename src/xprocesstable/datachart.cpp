@@ -3,6 +3,9 @@
 
 #include <QVBoxLayout>
 #include <QDesktopWidget>
+#include <QFileDialog>
+
+#define BUTTON_SIZE QSize(NS_DataChart::Constant::CaptionHeight,NS_DataChart::Constant::CaptionHeight)
 
 /*******************************************/
 /*! DataChart                              */
@@ -28,6 +31,12 @@ DataChart::DataChart(QWidget *parent) : QWidget(parent)
     _closeButton->setStyleSheet("background-color:rgb(153,153,153);");
     connect(_closeButton,SIGNAL(clicked()),this,SLOT(close()));
 
+    _exportButton = new QPushButton(this);
+    _exportButton->setIcon(QIcon(":/images/export_image.png"));
+    _exportButton->setFixedSize(buttonSize);
+    _exportButton->setStyleSheet("background-color:rgb(153,153,153);");
+    connect(_exportButton,SIGNAL(clicked()),this,SLOT(exportImage()));
+
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0,0,0,0);
     mainLayout->setSpacing(0);
@@ -36,6 +45,7 @@ DataChart::DataChart(QWidget *parent) : QWidget(parent)
     _caption = new DataChartCaption(this);
 
     topLayout->addWidget(_pinButton);
+    topLayout->addWidget(_exportButton);
     topLayout->addWidget(_caption);
     topLayout->addWidget(_closeButton);
 
@@ -68,6 +78,19 @@ void DataChart::setData(const QList<qreal> &data)
 void DataChart::clear()
 {
     _d->clear();
+}
+
+#define SAVE_IMAGE_FORMAT "PNG"
+void DataChart::exportImage()
+{
+    QString strSaveImage = QFileDialog::getSaveFileName(this,tr("Export Image"),".",QString("PNG Files(*.png);;"));
+    if(strSaveImage.isEmpty())
+    {
+        return;
+    }
+
+    QPixmap thisPixmap = QPixmap::grabWidget(this,0,0,width(),height());
+    thisPixmap.save(strSaveImage,SAVE_IMAGE_FORMAT);
 }
 
 void DataChart::showAt(const QPoint &showPoint)
@@ -128,6 +151,18 @@ void DataChart::resetTimer()
     }
 }
 
+QPushButton* DataChart::createButton(const QString &strText, const QIcon &icon, const QString &strTip)
+{
+    QPushButton* button = new QPushButton(this);
+    button->setText(strText);
+    button->setIcon(icon);
+    button->setFixedSize(BUTTON_SIZE);
+    button->setToolTip(strTip);
+    connect(button,SIGNAL(clicked()),this,SLOT(slot_buttonHandler()));
+    return button;
+
+}
+
 void DataChart::showEvent(QShowEvent *e)
 {
     QWidget::showEvent(e);
@@ -165,6 +200,11 @@ void DataChart::slot_pinThis()
             _hideTimer->start();
         }
     }
+}
+
+void DataChart::slot_buttonHandler()
+{
+
 }
 
 /*******************************************/

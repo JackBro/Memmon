@@ -1,8 +1,6 @@
 #include <QApplication>
 #include <QLabel>
 #include <QTextCodec>
-#include "meminfofetcher.h"
-#include "processmanager.h"
 #include "memmon.h"
 #include <QMessageBox>
 #include "queryengine.h"

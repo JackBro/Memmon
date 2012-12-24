@@ -42,7 +42,10 @@ class DataChart : public QWidget
     Q_OBJECT
 private:
     explicit DataChart(QWidget *parent = 0);
-    
+
+public Q_SLOTS:
+    void exportImage();
+
 public:
     static DataChart* instance();
 
@@ -76,10 +79,12 @@ private:
     void setThisSize();
     void initTimer();
     void resetTimer();
+    QPushButton* createButton(const QString& strText,const QIcon& icon = QIcon(),const QString& strTip = QString());
 
 private:
     QPushButton* _pinButton;
     QPushButton* _closeButton;
+    QPushButton* _exportButton;
     DataChartPrivate* _d;
     DataChartCaption* _caption;
 
@@ -89,6 +94,7 @@ private:
 
 private Q_SLOTS:
     void slot_pinThis();
+    void slot_buttonHandler();
 };
 
 class DataChartCaption : public QWidget
