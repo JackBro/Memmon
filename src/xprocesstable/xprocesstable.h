@@ -20,6 +20,13 @@ class XProcessTable : public QWidget
 {
     Q_DECLARE_PRIVATE(XProcessTable)
     Q_OBJECT
+
+    enum Actions
+    {
+        AutoAdjust = 0,
+        ActionCount
+    };
+
 public:
     explicit XProcessTable(QWidget *parent = 0);
 

@@ -5,6 +5,7 @@
 #include <QPaintEvent>
 #include <QMessageBox>
 #include <QToolTip>
+#include <QCoreApplication>
 
 XProcessTableHeader::XProcessTableHeader(QWidget *parent):QWidget(parent)
 {
@@ -22,6 +23,7 @@ void XProcessTableHeader::initVars()
     _maxWidth = width();
     _mousePressed = false;
     _startDragging = false;
+    _isAutoAdjust = false;
     _selectedXPos = 0;
 }
 
@@ -566,6 +568,49 @@ void XProcessTableHeader::leaveEvent(QEvent *e)
     QWidget::leaveEvent(e);
 }
 
+void XProcessTableHeader::resizeEvent(QResizeEvent *)
+{
+    if(_isAutoAdjust)
+    {
+        QVector<qreal> textRatios;
+        qreal totalTextLength = 0;
+
+        // get text width ratio
+        for(int i = 0; i < _headerItems.size(); i++)
+        {
+            totalTextLength += fontMetrics().width(_headerItems[i]->_text);
+        }
+
+        for(int i = 0; i < _headerItems.size(); i++)
+        {
+            qreal ratio = (qreal)fontMetrics().width(_headerItems[i]->_text)/totalTextLength;
+            textRatios.push_back(ratio);
+        }
+
+        // calculate geometries of header items
+        QVector<qreal> allColumnWidth;
+        qreal initX = 0;
+        for(int i = 0; i < textRatios.size(); i++)
+        {
+            qreal headerWidth = width() * textRatios.at(i);
+            allColumnWidth.push_back(headerWidth);
+
+            HeaderItem* item = _headerItems[i];
+            item->_startXPos = initX;
+            item->_width = headerWidth;
+            item->_separatorXPos = item->_startXPos + headerWidth;
+            item->_dragRect = QRectF(QPointF(item->_separatorXPos - XPT::Constant::Header_ExtraSpace,0),QPointF(item->_separatorXPos + XPT::Constant::Header_ExtraSpace,height()));
+            item->_thisRect = QRectF(QPointF(item->_startXPos,0),QPointF(item->_separatorXPos,height()));
+
+            initX += headerWidth;
+        }
+
+        update();
+        // emit columnWidthChanged signal
+        emit columnWidthChanged(allColumnWidth);
+    }
+}
+
 /*!
  * public interfaces
  */
@@ -601,4 +646,26 @@ void XProcessTableHeader::sortByThis(const QStringList &labels)
         _headerItems[colIndex]->_text = labels.at(colIndex);
     }
     update();
+}
+
+void XProcessTableHeader::setAutoAdjust(bool adjust)
+{
+    _isAutoAdjust = adjust;
+
+    if(_isAutoAdjust)
+    {
+        QEvent e(QEvent::Resize);
+        QCoreApplication::sendEvent(this,&e);
+    }
+    else
+    {
+        // what if the previous state is auto adjusted
+        // then reset to disable auto adjusted state it needs update
+        update();
+    }
+}
+
+bool XProcessTableHeader::isAutoAdjust() const
+{
+    return _isAutoAdjust;
 }

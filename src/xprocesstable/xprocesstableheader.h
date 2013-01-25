@@ -65,6 +65,8 @@ public:
 
     void clear();
     void sortByThis(const QStringList& labels);
+    void setAutoAdjust(bool adjust);
+    bool isAutoAdjust() const;
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -72,6 +74,12 @@ protected:
     void mousePressEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
     void leaveEvent(QEvent *);
+    void resizeEvent(QResizeEvent *);
+
+    QSize sizeHint() const
+    {
+        return QSize(400,XPT::Constant::Header_Height);
+    }
 
 
 private:
@@ -96,6 +104,7 @@ private:
 
     void setItemCount(int count);
     int itemCount() const;
+    int getTotalWidth();
 
 
 
@@ -106,6 +115,7 @@ private:
     int _itemCount;
     bool _mousePressed;
     bool _startDragging;
+    bool _isAutoAdjust;
     qreal _selectedXPos;
     qreal _maxWidth;
     HeaderItem* _selectedItem;

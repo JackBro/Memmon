@@ -7,7 +7,6 @@
 #include <windows.h>
 #include <tlhelp32.h>
 #include <QTimer>
-#include "meminfofetcher.h"
 
 class ProcessTable : public QWidget
 {
