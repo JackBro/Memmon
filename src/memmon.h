@@ -14,6 +14,7 @@
 #include "memorymonitordock.h"
 #include "logoutputwindow.h"
 #include "infoquerydock.h"
+#include "mmuiproxy.h"
 
 class Memmon : public QMainWindow
 {
@@ -50,6 +51,9 @@ private:
     void populateTable();
     void showDock(QDockWidget* dock);
     void showStatus(const QString& strStatus);
+
+    void setupStatusbar();
+    void updateStatus(bool running);
 private:
     XProcessTable* _processTable;
 
@@ -85,6 +89,8 @@ private:
     MemoryMonitorDock* _mmDock;
     LogOutputWindow* _logDock;
     InfoQueryDock* _wmiQueryDock;
+
+    MmUiProxy _uiProxy;
 
 
 

@@ -85,6 +85,7 @@ void QueryManager::setTable(XProcessTable *table)
     _table = table;
 //    connect(_table,SIGNAL(sig_removeProcess(uint32_t)),this,SLOT(slot_removeProcess(uint32_t)));
     _table->setColumns(_columns);
+    _table->setAutoAdjust(true);
 }
 
 void QueryManager::setUpdateInterval(int ms)

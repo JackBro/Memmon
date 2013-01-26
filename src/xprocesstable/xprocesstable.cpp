@@ -345,6 +345,16 @@ void XProcessTable::clear()
     d->clear();
 }
 
+void XProcessTable::setAutoAdjust(bool adjust)
+{
+    header->setAutoAdjust(adjust);
+}
+
+bool XProcessTable::isAutoAdjust() const
+{
+    return header->isAutoAdjust();
+}
+
 ///
 /// REIMPL
 ///

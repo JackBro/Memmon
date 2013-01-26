@@ -71,6 +71,8 @@ namespace MM
         DECLARE_STRING(Status_ShowPopup,"show popup chart ...")
         DECLARE_STRING(Status_HidePopup,"hide popup chart ...")
         DECLARE_STRING(Status_ClearHistoryData,"clear history data ...")
+
+        DECLARE_STRING(Empty,"")
     }
 
 

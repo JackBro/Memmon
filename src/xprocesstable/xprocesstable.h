@@ -48,6 +48,9 @@ public:
 
     void clear();
 
+    void setAutoAdjust(bool adjust);
+    bool isAutoAdjust() const;
+
 protected:
     void contextMenuEvent(QContextMenuEvent *);
 

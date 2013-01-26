@@ -17,6 +17,7 @@ Memmon::Memmon(QWidget *parent) :
     initMenus();
     initToolbars();
 //    populateTable();
+    setupStatusbar();
 }
 
 void Memmon::createWidgets()
@@ -274,6 +275,26 @@ void Memmon::showStatus(const QString &strStatus)
     statusBar()->showMessage(strStatus,3000);
 }
 
+void Memmon::setupStatusbar()
+{
+    statusBar()->addWidget(_uiProxy.getLabel(MmUiProxy::Label_Status));
+    _uiProxy.getLabel(MmUiProxy::Label_Status)->setText("Status: Stopped ");
+    statusBar()->addWidget(_uiProxy.getWidget(MmUiProxy::Widget_CpuIndicator));
+    statusBar()->addWidget(_uiProxy.getWidget(MmUiProxy::Widget_MemIndicator));
+}
+
+void Memmon::updateStatus(bool running)
+{
+    if(running)
+    {
+        _uiProxy.getLabel(MmUiProxy::Label_Status)->setText("Status: Running ");
+    }
+    else
+    {
+        _uiProxy.getLabel(MmUiProxy::Label_Status)->setText("Status: Stoppped ");
+    }
+}
+
 void Memmon::closeEvent(QCloseEvent *)
 {
 
@@ -292,6 +313,7 @@ void Memmon::slot_toolbuttonHandler()
         _queryManager->start();
         who->setEnabled(false);
         _stopButton->setEnabled(true);
+        updateStatus(true);
     }
 
     if(who == _stopButton)
@@ -299,6 +321,7 @@ void Memmon::slot_toolbuttonHandler()
         who->setEnabled(false);
         _queryManager->stop();
         _startButton->setEnabled(true);
+        updateStatus(false);
     }
 
     if(who == _clearButton)
@@ -389,4 +412,5 @@ void Memmon::slot_queryStopped()
 {
     _startButton->setEnabled(true);
     _stopButton->setEnabled(false);
+    updateStatus(false);
 }
