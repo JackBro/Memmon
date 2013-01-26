@@ -11,6 +11,12 @@
 #define Container QVector
 #endif
 
+#undef GET_SENDER
+#define GET_SENDER(OBJECT) OBJECT* who = qobject_cast<OBJECT *>(sender());
+
+#undef DEFINE_STRING
+#define DEFINE_STRING(VAR,VALUE) const QString VAR = VALUE;
+
 namespace XPT
 {
     namespace Color
@@ -40,6 +46,11 @@ namespace XPT
         const int IconExtraSpace = 1;
 
         const float HighlightBarOpacity = 0.6;
+    }
+
+    namespace String
+    {
+        DEFINE_STRING(CM_AutoAdjust,"Auto Adjust")
     }
 }
 class XProcessTable;

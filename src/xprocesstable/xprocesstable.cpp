@@ -9,6 +9,7 @@
 #include <QIcon>
 #include <QScrollBar>
 
+
 /*******************************************/
 /*! XProcessItem                           */
 /*******************************************/
@@ -266,6 +267,8 @@ XProcessTable::XProcessTable(QWidget *parent) :
     connect(area,SIGNAL(setViewportY(int,int)),d_ptr,SLOT(setViewportY(int,int)));
 
     connect(wrapArea->horizontalScrollBar(),SIGNAL(valueChanged(int)),area,SLOT(layoutVScrollBar(int)));
+
+    initContextMenu();
 }
 
 ///
@@ -342,16 +345,60 @@ void XProcessTable::clear()
     d->clear();
 }
 
+///
+/// REIMPL
+///
+void XProcessTable::contextMenuEvent(QContextMenuEvent *e)
+{
+    _contextMenu->exec(e->globalPos());
+    e->accept();
+}
 
 ///
 /// PRIVATE FUNCTIONS
 ///
+void XProcessTable::initContextMenu()
+{
+    _contextMenu = new QMenu(this);
+
+    createAction(AutoAdjust,XPT::String::CM_AutoAdjust);
+
+    for(int i = 0; i < ActionCount; i++)
+    {
+        _contextMenu->addAction(_actions[i]);
+    }
+}
+
 void XProcessTable::createItemById(uint32_t pid)
 {
     XProcessItem* newItem = new XProcessItem(this);
     newItem->setPid(pid);
 
     _pid2ItemMap.insert(pid,newItem);
+}
+
+QAction* XProcessTable::createAction(Actions act, const QString &strText, const QIcon &icon)
+{
+    QAction* action = new QAction(this);
+    action->setText(strText);
+    action->setIcon(icon);
+    connect(action,SIGNAL(triggered()),this,SLOT(slot_actionHandler()));
+
+    _actions[act] = action;
+    return action;
+}
+
+///
+/// PRIVATE SLOT FUNCTIONS
+///
+void XProcessTable::slot_actionHandler()
+{
+    GET_SENDER(QAction);
+
+    if(who == _actions[AutoAdjust])
+    {
+        header->setAutoAdjust(!header->isAutoAdjust());
+    }
 }
 
 /*******************************************/

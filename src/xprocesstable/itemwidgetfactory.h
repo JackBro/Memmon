@@ -4,7 +4,9 @@
 #include <QLabel>
 #include <QObject>
 #include <QToolButton>
-#include "../progressbar.h"
+
+#include "../ctrl/progressbar.h"
+
 enum WidgetType
 {
     Text,Bytes,Progress,Path,Icon

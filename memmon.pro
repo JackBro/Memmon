@@ -8,6 +8,7 @@ include(./src/3dparty/qtsingleapplication/qtsingleapplication.pri)
 include(./src/src.pri)
 include(./src/xprocesstable/xprocesstable.pri)
 include(./version.pri)
+include(./src/ctrl/ctrl.pri)
 
 TEMPLATE = app
 

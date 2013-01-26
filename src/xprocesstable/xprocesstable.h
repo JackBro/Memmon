@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QIcon>
+#include <QAction>
+#include <QMenu>
+
 #include "itemwidgetfactory.h"
 #include "xprocesstableheader.h"
 
@@ -45,8 +48,16 @@ public:
 
     void clear();
 
+protected:
+    void contextMenuEvent(QContextMenuEvent *);
+
 private:
+    void initContextMenu();
     void createItemById(uint32_t pid);
+    QAction* createAction(Actions act, const QString& strText, const QIcon& icon = QIcon());
+
+private Q_SLOTS:
+    void slot_actionHandler();
 
 private:
     XProcessTableHeader* header;
@@ -57,6 +68,9 @@ private:
 
     QMap<uint32_t,bool> _pid2UpdatedMap;
     QVector<uint32_t> _deadPids;
+
+    QMenu* _contextMenu;
+    QAction* _actions[ActionCount];
 
     Q_DISABLE_COPY(XProcessTable)
 

@@ -10,7 +10,6 @@ SOURCES +=  $$PWD/main.cpp \
             $$PWD/querythread.cpp \
             $$PWD/infoquerywindow.cpp \
             $$PWD/infooutputdock.cpp \
-            $$PWD/progressbar.cpp \
             $$PWD/memchart.cpp \
             $$PWD/testwidget.cpp \
             $$PWD/pyhistogramtip.cpp \
@@ -26,7 +25,8 @@ SOURCES +=  $$PWD/main.cpp \
             $$PWD/memorymonitordock.cpp \
             $$PWD/logoutputwindow.cpp \
             $$PWD/notifydockwidget.cpp \
-            $$PWD/infoquerydock.cpp
+            $$PWD/infoquerydock.cpp \
+    src/mmuiproxy.cpp
 
 
 
@@ -38,7 +38,6 @@ HEADERS += \
             $$PWD/querythread.h \
             $$PWD/infoquerywindow.h \
             $$PWD/infooutputdock.h \
-            $$PWD/progressbar.h \
             $$PWD/memchart.h \
             $$PWD/memchart_p.h \
             $$PWD/testwidget.h \
@@ -56,4 +55,5 @@ HEADERS += \
             $$PWD/logoutputwindow.h \
             $$PWD/notifydockwidget.h \
             $$PWD/infoquerydock.h \
-            $$PWD/notifydockwidget.h
+            $$PWD/notifydockwidget.h \
+    src/mmuiproxy.h
