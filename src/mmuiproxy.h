@@ -74,7 +74,7 @@ public:
 
     enum Action
     {
-
+        Action_Export
     };
 
     enum ToolBar
@@ -98,13 +98,16 @@ public:
 public:
     DECLARE_INLINE_GET_WIDGET_ACCESSOR(Widget)
     DECLARE_INLINE_GET_WIDGET_ACCESSOR(Label)
+    DECLARE_INLINE_GET_WIDGET_ACCESSOR(Action)
 
     DECLARE_INLINE_WIDGET_COUNT_ACCESSOR(Widget)
     DECLARE_INLINE_WIDGET_COUNT_ACCESSOR(Label)
+    DECLARE_INLINE_WIDGET_COUNT_ACCESSOR(Action)
 
 private:
     void initWidgets();
     void initLabels();
+    void initActions();
 
 
     // utility function for constructing qaction
@@ -123,12 +126,14 @@ private:
 
     DECLARE_INLINE_ADD_WIDGET_TO_MAP_ACCESSOR(Widget)
     DECLARE_INLINE_ADD_WIDGET_TO_MAP_ACCESSOR(Label)
+    DECLARE_INLINE_ADD_WIDGET_TO_MAP_ACCESSOR(Action)
 
 private:
     QWidget* _parent;
 
     DECLARE_WIDGET_MAP(Widget)
     DECLARE_WIDGET_MAP(Label)
+    DECLARE_WIDGET_MAP(Action)
 
 
 };

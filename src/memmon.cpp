@@ -55,6 +55,9 @@ void Memmon::initMenus()
     _exitAct = createAction(MM::Text::File_Exit);
     _exitAct->setShortcut(QKeySequence::Quit);
 
+
+    _fileMenu->addAction(_uiProxy.getAction(MmUiProxy::Action_Export));
+    _fileMenu->addSeparator();
     _fileMenu->addAction(_exitAct);
     menuBar()->addMenu(_fileMenu);
 
@@ -293,6 +296,11 @@ void Memmon::updateStatus(bool running)
     {
         _uiProxy.getLabel(MmUiProxy::Label_Status)->setText("Status: Stoppped ");
     }
+}
+
+void Memmon::exportContents()
+{
+
 }
 
 void Memmon::closeEvent(QCloseEvent *)

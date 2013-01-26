@@ -54,6 +54,7 @@ private:
 
     void setupStatusbar();
     void updateStatus(bool running);
+    void exportContents();
 private:
     XProcessTable* _processTable;
 

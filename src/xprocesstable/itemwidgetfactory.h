@@ -12,7 +12,7 @@ enum WidgetType
     Text,Bytes,Progress,Path,Icon
 };
 
-static const int DefaultDataCount = 100;
+static const int DefaultDataCount = 10;
 
 template <typename T>
 class AbstractItemWidget

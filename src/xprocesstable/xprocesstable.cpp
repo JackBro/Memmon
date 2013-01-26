@@ -240,7 +240,7 @@ XProcessTable::XProcessTable(QWidget *parent) :
     XScrollArea* wrapArea = new XScrollArea(this);
     wrapArea->setWidgetResizable(true);
     QWidget* mainWidget = new QWidget(this);
-    header = new XProcessTableHeader(this);
+    header = new XHeader(this);
     d_ptr = new XProcessTablePrivate(this);
 
     XScrollArea*  area= new XScrollArea(this);

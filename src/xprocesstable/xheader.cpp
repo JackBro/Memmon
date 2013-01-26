@@ -1,14 +1,13 @@
-#include "xprocesstableheader.h"
+#include "xheader.h"
 
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QMessageBox>
-#include <QToolTip>
+#include <QEvent>
 #include <QCoreApplication>
+#include <QDebug>
 
-#if 0
-XProcessTableHeader::XProcessTableHeader(QWidget *parent):QWidget(parent)
+/******************************************************/
+/*************| XHeader             |****************/
+/******************************************************/
+XHeader::XHeader(QWidget *parent):QWidget(parent)
 {
     initVars();
     initSettings();
@@ -18,7 +17,7 @@ XProcessTableHeader::XProcessTableHeader(QWidget *parent):QWidget(parent)
  * private utility functions
  */
 
-void XProcessTableHeader::initVars()
+void XHeader::initVars()
 {
     _width = width();
     _maxWidth = width();
@@ -28,36 +27,22 @@ void XProcessTableHeader::initVars()
     _selectedXPos = 0;
 }
 
-void XProcessTableHeader::initSettings()
+void XHeader::initSettings()
 {
     setFixedHeight(XPT::Constant::Header_Height);
     setMouseTracking(true);
-    setMinimumWidth(1000);
+//    setMinimumWidth(1000);
 }
 
-void XProcessTableHeader::createItems()
+void XHeader::createItems()
 {
     qDeleteAll(_headerItems);
     _headerItems.clear();
 
-    qreal itemWidth = (qreal)width()/_labels.size();
-    qreal minTotalWidth = itemWidth;
-
-    qreal tmpTotalWidth = 0;
-    foreach(const QString& str,_labels)
-    {
-        tmpTotalWidth += fontMetrics().width(str) + 2 * XPT::Constant::Header_ExtraSpace;
-    }
-
-    if(minTotalWidth < tmpTotalWidth)
-    {
-        itemWidth = (qreal)tmpTotalWidth/_labels.size();
-        setMinimumWidth(minTotalWidth);
-    }
-
+    qreal itemWidth = (qreal)sizeHint().width()/_labels.size();
     qreal initX = 0;
 
-    QVector<qreal> allColumnWidth;
+    ContainerType<qreal> allColumnWidth;
     for(int i = 0;i < _labels.size();i++)
     {
         QPointF topLeft(initX,0);
@@ -82,10 +67,9 @@ void XProcessTableHeader::createItems()
     }
 
     emit columnWidthChanged(allColumnWidth);
-    emit columnsChanged(_labels);
 }
 
-void XProcessTableHeader::clearHover()
+void XHeader::clearHover()
 {
     for(int i = 0;i < _headerItems.size();i++)
     {
@@ -95,18 +79,19 @@ void XProcessTableHeader::clearHover()
     update();
 }
 
-void XProcessTableHeader::mousePressEventHandler(QMouseEvent *e)
+void XHeader::mousePressEventHandler(QMouseEvent *e)
 {
+    if(_isAutoAdjust)
+    {
+        return;
+    }
+
     _mousePressed = true;
 
 #if 1
     for(int i = 0;i < _headerItems.size();i++)
     {
         HeaderItem* item = _headerItems.at(i);
-        if(item == NULL)
-        {
-            return ;
-        }
         if(item->_dragRect.contains(e->pos()))
         {
             _startDragging = true;
@@ -141,8 +126,13 @@ void XProcessTableHeader::mousePressEventHandler(QMouseEvent *e)
 
 }
 
-void XProcessTableHeader::mouseReleaseEventHandler(QMouseEvent *e)
+void XHeader::mouseReleaseEventHandler(QMouseEvent *e)
 {
+    if(_isAutoAdjust)
+    {
+        return;
+    }
+
     if(_startDragging)
     {
         qreal textLength = fontMetrics().width(_selectedItem->_text);
@@ -186,15 +176,22 @@ void XProcessTableHeader::mouseReleaseEventHandler(QMouseEvent *e)
     updateColumnWidth();
 }
 
-qreal XProcessTableHeader::resetLatterItems(int startIndex)
+qreal XHeader::resetLatterItems(int startIndex)
 {
     qreal latterTotalWidth = 0;
     qreal itemWidth = 0;
-    for(int startIndex = startIndex + 1;startIndex < _headerItems.size();startIndex++)
+
+    int startMoveIndex = startIndex + 1;
+    if(startMoveIndex >= _headerItems.size())
+    {
+        startMoveIndex = _headerItems.size() - 1;
+    }
+
+    for(;startMoveIndex < _headerItems.size();startMoveIndex++)
     {
 
-        HeaderItem* item = _headerItems.at(startIndex);
-        HeaderItem* prevItem = _headerItems.at(startIndex - 1);
+        HeaderItem* item = _headerItems.at(startMoveIndex);
+        HeaderItem* prevItem = _headerItems.at(startMoveIndex - 1);
 
         item->_startXPos = prevItem->_separatorXPos;
         item->_separatorXPos = item->_startXPos + item->_width;
@@ -206,7 +203,7 @@ qreal XProcessTableHeader::resetLatterItems(int startIndex)
     return latterTotalWidth;
 }
 
-void XProcessTableHeader::updateColumnWidth()
+void XHeader::updateColumnWidth()
 {
     if(!_mousePressed)
     {
@@ -215,7 +212,7 @@ void XProcessTableHeader::updateColumnWidth()
 
     _mousePressed = false;
 
-    QVector<qreal> allWidth;
+    ContainerType<qreal> allWidth;
     qreal totalWidth = 0;
     qreal itemWidth = 0;
     for(int i = 0;i < _headerItems.size(); i++)
@@ -227,13 +224,13 @@ void XProcessTableHeader::updateColumnWidth()
 
     if(_maxWidth < totalWidth)
     {
-        _maxWidth = totalWidth;
+        _maxWidth = getTotalWidth();
         setMinimumWidth(_maxWidth);
     }
     emit columnWidthChanged(allWidth);
 }
 
-bool XProcessTableHeader::isDraggingItem(QMouseEvent* e)
+bool XHeader::isDraggingItem(QMouseEvent* e)
 {
 
     bool inDragRect = false;
@@ -263,18 +260,33 @@ bool XProcessTableHeader::isDraggingItem(QMouseEvent* e)
     return inDragRect;
 }
 
-void XProcessTableHeader::setItemCount(int count)
+void XHeader::setItemCount(int count)
 {
     _itemCount = count;
 }
 
-int XProcessTableHeader::itemCount() const
+int XHeader::itemCount() const
 {
     return _itemCount;
 }
 
-void XProcessTableHeader::mouseMoveEventHandler(QMouseEvent *e)
+int XHeader::getTotalWidth()
 {
+    int totalWidth = 0;
+    for(int i = 0; i < _headerItems.size(); i++)
+    {
+        totalWidth += _headerItems[i]->_width;
+    }
+    return totalWidth;
+}
+
+void XHeader::mouseMoveEventHandler(QMouseEvent *e)
+{
+    if(_isAutoAdjust)
+    {
+        return;
+    }
+
     if(_startDragging)
     {
         int selectedIndex = _selectedItem->_index;
@@ -289,7 +301,7 @@ void XProcessTableHeader::mouseMoveEventHandler(QMouseEvent *e)
             return;
         }
 
-        QVector<qreal> allWidth;
+        ContainerType<qreal> allWidth;
         qreal totalWidth = 0;
 
         // get the items before the selected items
@@ -346,34 +358,20 @@ void XProcessTableHeader::mouseMoveEventHandler(QMouseEvent *e)
         resetLatterItems(selectedIndex);
 
         // calculate the total width and resize the width of the widget
-        _maxWidth = (_maxWidth < totalWidth) ? totalWidth : _maxWidth;
+//        _maxWidth = (_maxWidth < totalWidth) ? totalWidth : _maxWidth;
+        _maxWidth = getTotalWidth();
         setMinimumWidth(_maxWidth);
 
         // for performance consideration
         // since the performance bottle neck has been resolved , so we just make this functionality open
-//        if(itemCount() <= XPT::Constant::Real_MaxRowCountForMouseMoveUpdate)
-//        {
-            emit columnWidthChanged(allWidth);
-//        }
+        //        if(itemCount() <= XPT::Constant::Real_MaxRowCountForMouseMoveUpdate)
+        //        {
+        emit columnWidthChanged(allWidth);
+        //        }
     }
     else if(!_mousePressed && !isDraggingItem(e))
     {
         setCursor(QCursor(Qt::ArrowCursor));
-    }
-
-    // show header tip if text length is less than rect width
-    for(int headerIndex = 0;headerIndex < _headerItems.size();headerIndex++)
-    {
-        HeaderItem* headerItem = _headerItems[headerIndex];
-        if(headerItem->_thisRect.contains(e->pos()))
-        {
-            qreal textLength = fontMetrics().width(headerItem->_text);
-            if(textLength > headerItem->_thisRect.width())
-            {
-                QToolTip::showText(e->globalPos(),headerItem->_text);
-                return;
-            }
-        }
     }
 
     update();
@@ -383,7 +381,7 @@ void XProcessTableHeader::mouseMoveEventHandler(QMouseEvent *e)
 /*!
  * painting functions
  */
-void XProcessTableHeader::drawBackground(QPainter *painter)
+void XHeader::drawBackground(QPainter *painter)
 {
     painter->save();
     painter->setPen(Qt::NoPen);
@@ -404,7 +402,7 @@ void XProcessTableHeader::drawBackground(QPainter *painter)
     painter->restore();
 }
 
-void XProcessTableHeader::drawItems(QPainter *painter)
+void XHeader::drawItems(QPainter *painter)
 {
     painter->save();
 
@@ -430,7 +428,7 @@ void XProcessTableHeader::drawItems(QPainter *painter)
     painter->restore();
 }
 
-void XProcessTableHeader::drawSeparators(QPainter *painter)
+void XHeader::drawSeparators(QPainter *painter)
 {
     painter->save();
     painter->setPen(XPT::Color::Header_Separator);
@@ -448,7 +446,7 @@ void XProcessTableHeader::drawSeparators(QPainter *painter)
     painter->restore();
 }
 
-void XProcessTableHeader::drawHoverItem(QPainter *painter, HeaderItem *item, qreal& initX)
+void XHeader::drawHoverItem(QPainter *painter, HeaderItem *item, qreal& initX)
 {
     painter->save();
 
@@ -467,7 +465,7 @@ void XProcessTableHeader::drawHoverItem(QPainter *painter, HeaderItem *item, qre
 
     QFont boldFont;
     boldFont.setBold(true);
-//    boldFont.setPointSize(XPT::Constant::Header_Height/2);
+    //    boldFont.setPointSize(XPT::Constant::Header_Height/2);
 
     painter->setFont(boldFont);
 
@@ -479,7 +477,7 @@ void XProcessTableHeader::drawHoverItem(QPainter *painter, HeaderItem *item, qre
     initX += item->_width;
 }
 
-void XProcessTableHeader::drawPressedItem(QPainter *painter, HeaderItem *item, qreal& initX)
+void XHeader::drawPressedItem(QPainter *painter, HeaderItem *item, qreal& initX)
 {
     painter->save();
 
@@ -500,7 +498,7 @@ void XProcessTableHeader::drawPressedItem(QPainter *painter, HeaderItem *item, q
 
 }
 
-void XProcessTableHeader::drawNormalItem(QPainter *painter, HeaderItem *item, qreal& initX)
+void XHeader::drawNormalItem(QPainter *painter, HeaderItem *item, qreal& initX)
 {
 
     painter->save();
@@ -521,7 +519,12 @@ void XProcessTableHeader::drawNormalItem(QPainter *painter, HeaderItem *item, qr
 
 
     QFont textFont;
-//    textFont.setPointSize(XPT::Constant::Header_Height/2);
+    if(_isAutoAdjust)
+    {
+        textFont.setBold(true);
+        textFont.setFamily("Times New Roman");
+    }
+    //    textFont.setPointSize(XPT::Constant::Header_Height/2);
     painter->setFont(textFont);
 
     painter->setPen(XPT::Color::Header_NormalTitle);
@@ -537,7 +540,7 @@ void XProcessTableHeader::drawNormalItem(QPainter *painter, HeaderItem *item, qr
  * reimplemented functions
  */
 
-void XProcessTableHeader::paintEvent(QPaintEvent *)
+void XHeader::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
@@ -548,28 +551,28 @@ void XProcessTableHeader::paintEvent(QPaintEvent *)
 
 }
 
-void XProcessTableHeader::mouseMoveEvent(QMouseEvent *e)
+void XHeader::mouseMoveEvent(QMouseEvent *e)
 {
     mouseMoveEventHandler(e);
 }
 
-void XProcessTableHeader::mousePressEvent(QMouseEvent *e)
+void XHeader::mousePressEvent(QMouseEvent *e)
 {
     mousePressEventHandler(e);
 }
 
-void XProcessTableHeader::mouseReleaseEvent(QMouseEvent *e)
+void XHeader::mouseReleaseEvent(QMouseEvent *e)
 {
     mouseReleaseEventHandler(e);
 }
 
-void XProcessTableHeader::leaveEvent(QEvent *e)
+void XHeader::leaveEvent(QEvent *e)
 {
     clearHover();
     QWidget::leaveEvent(e);
 }
 
-void XProcessTableHeader::resizeEvent(QResizeEvent *)
+void XHeader::resizeEvent(QResizeEvent *)
 {
     if(_isAutoAdjust)
     {
@@ -589,7 +592,7 @@ void XProcessTableHeader::resizeEvent(QResizeEvent *)
         }
 
         // calculate geometries of header items
-        QVector<qreal> allColumnWidth;
+        ContainerType<qreal> allColumnWidth;
         qreal initX = 0;
         for(int i = 0; i < textRatios.size(); i++)
         {
@@ -616,26 +619,24 @@ void XProcessTableHeader::resizeEvent(QResizeEvent *)
  * public interfaces
  */
 
-void XProcessTableHeader::setLabels(const QStringList &labels)
+void XHeader::setLabels(const QStringList &labels)
 {
     _labels = labels;
-
     createItems();
     update();
 }
 
-QStringList XProcessTableHeader::labels() const
+QStringList XHeader::labels() const
 {
     return _labels;
 }
 
-void XProcessTableHeader::clear()
+void XHeader::clear()
 {
     qDeleteAll(_headerItems);
-    _headerItems.clear();
 }
 
-void XProcessTableHeader::sortByThis(const QStringList &labels)
+void XHeader::sortByThis(const QStringList &labels)
 {
     if(labels.size() != _headerItems.size())
     {
@@ -649,7 +650,7 @@ void XProcessTableHeader::sortByThis(const QStringList &labels)
     update();
 }
 
-void XProcessTableHeader::setAutoAdjust(bool adjust)
+void XHeader::setAutoAdjust(bool adjust)
 {
     _isAutoAdjust = adjust;
 
@@ -666,9 +667,7 @@ void XProcessTableHeader::setAutoAdjust(bool adjust)
     }
 }
 
-bool XProcessTableHeader::isAutoAdjust() const
+bool XHeader::isAutoAdjust() const
 {
     return _isAutoAdjust;
 }
-
-#endif

@@ -73,6 +73,9 @@ namespace MM
         DECLARE_STRING(Status_ClearHistoryData,"clear history data ...")
 
         DECLARE_STRING(Empty,"")
+
+        // qaction
+        DECLARE_STRING(Action_Export,"Export")
     }
 
 

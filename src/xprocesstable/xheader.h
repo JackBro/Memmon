@@ -1,18 +1,43 @@
-#ifndef XPROCESSTABLEHEADER_H
-#define XPROCESSTABLEHEADER_H
+#ifndef LTEHEADER_H
+#define LTEHEADER_H
 
 #include <QWidget>
-#include <QObject>
-#include <QRectF>
-#include <QColor>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QMouseEvent>
 
-class QPainter;
-class QPaintEvent;
-class QMouseEvent;
+#undef ContainerType
+#define ContainerType QVector
 
+namespace XPT
+{
+    namespace Color
+    {
+        const QColor Header_StartBackground = QColor(255,255,255);
+        const QColor Header_MiddleBackground = QColor(241,241,241);
+        const QColor Header_StopBackground = QColor(225,225,225);
 
-#if 0
-class XProcessTableHeader : public QWidget
+        const QColor Header_NormalTitle = Qt::black;
+        const QColor Header_HoverTitle = Qt::black;
+        const QColor Header_Separator = QColor(132,132,132);
+
+        const QColor Header_HoverStartBackground = QColor(69,151,212);
+        const QColor Header_HoverStopBackground = QColor(92,191,212);
+
+        const QColor Header_PressedStartBackground = QColor(61,197,255);
+        const QColor Header_PressedStopBackground = QColor(56,182,235);
+    }
+
+    namespace Constant
+    {
+        const int Header_Height = 20;
+        const int Header_ExtraSpace = 5;
+        const qreal Header_HoverOpacity = 0.6;
+
+    }
+}
+
+class XHeader : public QWidget
 {
     struct HeaderItem
     {
@@ -31,8 +56,8 @@ class XProcessTableHeader : public QWidget
 
 Q_OBJECT
 public:
-    explicit XProcessTableHeader(QWidget* parent = 0);
-    virtual ~XProcessTableHeader(){ clear(); }
+    explicit XHeader(QWidget* parent = 0);
+    virtual ~XHeader(){ clear(); }
 
 public:
     void setLabels(const QStringList& labels);
@@ -40,6 +65,7 @@ public:
 
     void clear();
     void sortByThis(const QStringList& labels);
+
     void setAutoAdjust(bool adjust);
     bool isAutoAdjust() const;
 
@@ -85,23 +111,26 @@ private:
 
 private:
     QStringList _labels;
-    QVector<HeaderItem*> _headerItems;
+    ContainerType<HeaderItem*> _headerItems;
+
     int _width;
     int _itemCount;
+
     bool _mousePressed;
     bool _startDragging;
     bool _isAutoAdjust;
+
     qreal _selectedXPos;
     qreal _maxWidth;
+
     HeaderItem* _selectedItem;
     QPointF _pressedPoint;
 
 Q_SIGNALS:
     void columnWidthChanged(QVector<qreal> allColumnWidth);
-    void columnsChanged(const QStringList& columns);
 
+    friend class LteTableWidgetPrivate;
 
 };
-#endif
 
-#endif // XPROCESSTABLEHEADER_H
+#endif // LTEHEADER_H

@@ -5,6 +5,7 @@ MmUiProxy::MmUiProxy(QWidget *parent) :
 {
     initWidgets();
     initLabels();
+    initActions();
 }
 
 void MmUiProxy::initWidgets()
@@ -19,6 +20,11 @@ void MmUiProxy::initWidgets()
 void MmUiProxy::initLabels()
 {
     ADD_WIDGET(Label,Label_Status,createLabel(MM::Text::Empty))
+}
+
+void MmUiProxy::initActions()
+{
+    ADD_WIDGET(Action,Action_Export,createAction(MM::Text::Action_Export));
 }
 
 QMenu* MmUiProxy::createMenu(const QString &strTitle, const QIcon& icon)

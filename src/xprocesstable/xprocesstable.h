@@ -8,6 +8,7 @@
 
 #include "itemwidgetfactory.h"
 #include "xprocesstableheader.h"
+#include "xheader.h"
 
 #ifndef Container
 #define Container QList
@@ -63,7 +64,7 @@ private Q_SLOTS:
     void slot_actionHandler();
 
 private:
-    XProcessTableHeader* header;
+    XHeader* header;
     XProcessTablePrivate* d_ptr;
 
     QVector<uint32_t> _pids;
