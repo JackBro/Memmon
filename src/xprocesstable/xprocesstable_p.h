@@ -94,6 +94,8 @@ public:
 
     void removeItemByPid(uint32_t pid);
 
+    QByteArray contents();
+
 protected:
     void paintEvent(QPaintEvent* e);
     void mousePressEvent(QMouseEvent* e);

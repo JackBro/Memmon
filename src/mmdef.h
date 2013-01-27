@@ -50,6 +50,7 @@ namespace MM
         DECLARE_STRING(TB_StopQuery,"Stop Query")
         DECLARE_STRING(TB_ClearHistoryData,"Clear History Data")
         DECLARE_STRING(TB_ShowPopupChart,"Show Popup Chart")
+        DECLARE_STRING(TB_GeneralInfo,"General Info")
 
         DECLARE_STRING(MMW_RefreshProcess,"Refresh")
         DECLARE_STRING(MMW_StartMonitor,"Start Monitoring")
@@ -138,6 +139,7 @@ namespace MM
         DECLARE_STRING(Pin,":/images/pin.png")
         DECLARE_STRING(Chart,":/images/chart.png")
         DECLARE_STRING(Close,":/images/close.png")
+        DECLARE_STRING(GeneralInfo,":/images/info.png")
         DECLARE_STRING(ExportImage,":/images/export_image.png")
     }
 

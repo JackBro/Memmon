@@ -137,6 +137,11 @@ WidgetType TextDisplayWidget::widgetType() const
     return Text;
 }
 
+QString TextDisplayWidget::text() const
+{
+    return _label->text();
+}
+
 bool TextDisplayWidget::event(QEvent *e)
 {
     if(e->type() == QEvent::ToolTip)
@@ -199,6 +204,11 @@ QIcon IconDisplayWidget::icon() const
     return _icon;
 }
 
+QString IconDisplayWidget::text() const
+{
+    _label->text();
+}
+
 /***********************************************/
 /*! ProgressWidget                             */
 /***********************************************/
@@ -232,6 +242,11 @@ QString ProgressDisplayWidget::value() const
 WidgetType ProgressDisplayWidget::widgetType() const
 {
     return Progress;
+}
+
+QString ProgressDisplayWidget::text() const
+{
+    return tr("%1").arg(_pgsBar->value());
 }
 /***********************************************/
 /*! BytesDisplayWidget                         */
@@ -281,6 +296,16 @@ QString BytesDisplayWidget::value() const
 WidgetType BytesDisplayWidget::widgetType() const
 {
     return Bytes;
+}
+
+QString BytesDisplayWidget::text() const
+{
+    QString strText;
+    for(int i = 0; i < _data.size(); i++)
+    {
+        strText += tr("%1 ").arg(_data.at(i));
+    }
+    return strText;
 }
 
 void BytesDisplayWidget::clear()
@@ -370,6 +395,11 @@ QString PathDisplayWidget::value() const
 WidgetType PathDisplayWidget::widgetType() const
 {
     return Path;
+}
+
+QString PathDisplayWidget::text() const
+{
+    return _button->text();
 }
 
 #include <QMessageBox>

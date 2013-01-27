@@ -6,9 +6,13 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QMessageBox>
+#include <QFileDialog>
 
 #undef USE_WIDGET
 #define USE_WIDGET(WIDGET_NAME,WIDGET_ENUM) _uiProxy->get ## WIDGET_NAME(MmUiProxy :: WIDGET_NAME ## _ ## WIDGET_ENUM)
+
+#undef MM_INIT_VAR
+#define MM_INIT_VAR(VAR,VALUE) VAR = VALUE
 
 Memmon::Memmon(QWidget *parent) :
     QMainWindow(parent)
@@ -35,6 +39,9 @@ void Memmon::createWidgets()
 
 void Memmon::initVars()
 {
+    MM_INIT_VAR(_generalInfoPad,0);
+    MM_INIT_VAR(_infoPadContainer,0);
+
     _uiProxy = new MmUiProxy(this);
     _queryManager = new QueryManager(this);
     connect(_queryManager,SIGNAL(sig_queryStopped()),this,SLOT(slot_queryStopped()));
@@ -135,6 +142,10 @@ void Memmon::initUsageFetcher()
     _memUsageFetcher = new MemoryUsageFetcher(this);
     connect(_memUsageFetcher,SIGNAL(sig_setMemoryUsage(int)),this,SLOT(slot_updateMemUsage(int)));
     _memUsageFetcher->start();
+
+    _processCountFetcher = new ProcessCountFetcher(this);
+    connect(_processCountFetcher,SIGNAL(sig_setTotalProcessCount(int)),this,SLOT(slot_setTotalProcessCount(int)));
+    _processCountFetcher->start();
 }
 
 void Memmon::initConnections()
@@ -144,6 +155,8 @@ void Memmon::initConnections()
 
     PYProg* memProg = (PYProg*)USE_WIDGET(Widget,MemIndicator);
     connect(memProg,SIGNAL(sig_mousePressed()),this,SLOT(slot_showMemUsageHistory()));
+
+    connect(((QToolButton*)USE_WIDGET(ToolButton,GeneralInfo)),SIGNAL(clicked()),this,SLOT(slot_showGeneralInfo()));
 
 }
 
@@ -293,6 +306,14 @@ void Memmon::setupStatusbar()
 {
     statusBar()->addWidget(USE_WIDGET(Label,Status));
     USE_WIDGET(Label,Status)->setText("Status: Stopped ");
+
+    statusBar()->addPermanentWidget(USE_WIDGET(ToolButton,GeneralInfo));
+
+    QFont boldFont;
+    boldFont.setBold(true);
+    USE_WIDGET(Label,TotalProcessCount)->setFont(boldFont);
+
+    statusBar()->addPermanentWidget(USE_WIDGET(Label,TotalProcessCount));
     statusBar()->addPermanentWidget(USE_WIDGET(Widget,CpuIndicator));
     statusBar()->addPermanentWidget(USE_WIDGET(Widget,MemIndicator));
 }
@@ -311,7 +332,47 @@ void Memmon::updateStatus(bool running)
 
 void Memmon::exportContents()
 {
+    QString strExportFile = QFileDialog::getSaveFileName(this,tr("Export Contents"),".",QString("Text Files(*.log)"));
+    if(strExportFile.isEmpty())
+    {
+        return;
+    }
 
+    QFile exportFile(strExportFile);
+    if(!exportFile.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::warning(this,tr("Warning"),tr("Failed to write contents to \"%1\"").arg(strExportFile));
+        return;
+    }
+
+    QTextStream outStream(&exportFile);
+    outStream << _processTable->contents();
+
+}
+
+void Memmon::addToInfoPad(int categoryIndex, const QByteArray &output)
+{
+    QString strOutput(output);
+    QStringList strLines = strOutput.split('\n');
+    strLines.removeFirst();
+    strLines.removeLast();
+    Q_ASSERT(strLines.size() == 2);
+
+    QString captionLine(strLines.at(0));
+    QString valueLine(strLines.at(1));
+
+    QStringList captionList = captionLine.split(',');
+    QStringList valueList = valueLine.split(',');
+
+    captionList.removeFirst();
+    valueList.removeFirst();
+
+//    Q_ASSERT(captionList.size() == valueList.size());
+
+    for(int i = 0; i < captionList.size(); i++)
+    {
+        _generalInfoPad->AddItem(categoryIndex,qMakePair(captionList.at(i), valueList.at(i).isEmpty() ? "N/A" : valueList.at(i)));
+    }
 }
 
 void Memmon::closeEvent(QCloseEvent *)
@@ -402,6 +463,11 @@ void Memmon::slot_actionHandler()
     {
         showAboutThis();
     }
+
+    if(who == USE_WIDGET(Action,Export))
+    {
+        exportContents();
+    }
 }
 
 
@@ -450,6 +516,11 @@ void Memmon::slot_updateMemUsage(int usage)
     memHistory->addChannelData(0,usage);
 }
 
+void Memmon::slot_setTotalProcessCount(int count)
+{
+    ((QLabel*)(USE_WIDGET(Label,TotalProcessCount)))->setText(tr("Number of Processes: %1").arg(count));
+}
+
 void Memmon::slot_showCpuUsageHistory()
 {
     if(USE_WIDGET(Widget,CpuUsageHistory)->isVisible())
@@ -472,4 +543,41 @@ void Memmon::slot_showMemUsageHistory()
     {
         USE_WIDGET(Widget,MemUsageHistory)->show();
     }
+}
+
+void Memmon::slot_showGeneralInfo()
+{
+    if(_generalInfoPad == 0)
+    {
+        _infoPadContainer = new QScrollArea(this);
+        _infoPadContainer->setWidgetResizable(true);
+        _infoPadContainer->setWindowFlags(Qt::Drawer);
+        _infoPadContainer->setWindowTitle(tr("General Info"));
+        _infoPadContainer->resize(QSize(400,400));
+
+        _generalInfoPad = new PYInfoPad(this);
+        _infoPadContainer->setWidget(_generalInfoPad);
+
+        const QString kProcess("WMIC");
+        const QStringList kCpuQuery = QStringList() << "Cpu" << "List" << "/Format:csv";
+        const QStringList kCsQuery = QStringList() << "ComputerSystem" << "List" << "/Format:csv";
+
+        QProcess pro;
+        pro.setProcessChannelMode(QProcess::MergedChannels);
+
+        // query cpu info
+        _generalInfoPad->AddCategory(tr("CPU Info"));
+        pro.start(kProcess,kCpuQuery);
+        pro.waitForFinished();
+        addToInfoPad(0,pro.readAllStandardOutput());
+
+        // query computer system info
+        _generalInfoPad->AddCategory(tr("Computer System Info"));
+        pro.start(kProcess,kCsQuery);
+        pro.waitForFinished();
+        addToInfoPad(1,pro.readAllStandardOutput());
+    }
+
+
+    _infoPadContainer->show();
 }

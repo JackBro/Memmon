@@ -110,7 +110,8 @@ public:
     enum Label
     {
         Label_Status,
-        Label_UpdateInterval
+        Label_UpdateInterval,
+        Label_TotalProcessCount
     };
 
     enum Widget
@@ -126,7 +127,8 @@ public:
         ToolButton_Start,
         ToolButton_Stop,
         ToolButton_Clear,
-        ToolButton_ShowPopup
+        ToolButton_ShowPopup,
+        ToolButton_GeneralInfo
     };
 
     enum ComboBox

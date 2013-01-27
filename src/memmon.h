@@ -18,6 +18,8 @@
 #include "mmvarproxy.h"
 #include "cpuusagefetcher.h"
 #include "memoryusagefetcher.h"
+#include "processcountfetcher.h"
+#include "pyinfopad.h"
 
 class Memmon : public QMainWindow
 {
@@ -60,6 +62,8 @@ private:
     void setupStatusbar();
     void updateStatus(bool running);
     void exportContents();
+    void addToInfoPad(int categoryIndex, const QByteArray& output);
+
 private:
     XProcessTable* _processTable;
 
@@ -73,8 +77,12 @@ private:
     MmUiProxy* _uiProxy;
     MmVarProxy _varProxy;
 
+    PYInfoPad* _generalInfoPad;
+    QScrollArea* _infoPadContainer;
+
     CpuUsageFetcher* _cpuUsageFetcher;
     MemoryUsageFetcher* _memUsageFetcher;
+    ProcessCountFetcher* _processCountFetcher;
 
 
 private Q_SLOTS:
@@ -85,8 +93,10 @@ private Q_SLOTS:
     void slot_queryStopped();
     void slot_updateCpuUsage(int usage);
     void slot_updateMemUsage(int usage);
+    void slot_setTotalProcessCount(int count);
     void slot_showCpuUsageHistory();
     void slot_showMemUsageHistory();
+    void slot_showGeneralInfo();
     friend class MmUiProxy;
 
 };

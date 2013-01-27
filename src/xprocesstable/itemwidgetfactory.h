@@ -24,6 +24,7 @@ protected:
     virtual void setValue(const T& value) = 0;
     virtual T value() const = 0;
     virtual WidgetType widgetType() const = 0;
+    virtual QString text() const = 0;
 
 protected:
     T _value;
@@ -44,6 +45,7 @@ public:
     inline QString columnName() const { return _columnName; }
     inline void setProcessName(const QString& strProcessName){ _processName = strProcessName; }
     inline QString processName() const { return _processName; }
+    virtual QString text() const { return QString(); }
 protected:
     QString _columnName;
     QString _processName;
@@ -61,6 +63,7 @@ public:
     void setValue(const QString &value);
     QString value() const;
     WidgetType widgetType() const;
+    QString text() const;
 
 protected:
     bool event(QEvent *);
@@ -86,6 +89,8 @@ public:
     void setIcon(const QIcon& icon);
     QIcon icon() const;
 
+    QString text() const;
+
 private:
     QIcon _icon;
     QLabel* _iconLabel;
@@ -103,6 +108,8 @@ public:
     QString value() const;
     WidgetType widgetType() const;
 
+    QString text() const;
+
 private:
     ProgressBar* _pgsBar;
 
@@ -118,6 +125,8 @@ public:
     void setValue(const QString &value);
     QString value() const;
     WidgetType widgetType() const;
+
+    QString text() const;
 
     void clear();
 
@@ -150,6 +159,8 @@ public:
     void setValue(const QString &value);
     QString value() const;
     WidgetType widgetType() const;
+
+    QString text() const;
 
 
 private:

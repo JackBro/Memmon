@@ -29,7 +29,9 @@ SOURCES +=  $$PWD/main.cpp \
     src/mmuiproxy.cpp \
     src/mmvarproxy.cpp \
     src/cpuusagefetcher.cpp \
-    src/memoryusagefetcher.cpp
+    src/memoryusagefetcher.cpp \
+    src/processcountfetcher.cpp \
+    src/basefetcher.cpp
 
 
 
@@ -62,7 +64,13 @@ HEADERS += \
     src/mmuiproxy.h \
     src/mmvarproxy.h \
     src/cpuusagefetcher.h \
-    src/memoryusagefetcher.h
+    src/memoryusagefetcher.h \
+    src/processcountfetcher.h \
+    src/basefetcher.h
+
+
+
+
 
 
 

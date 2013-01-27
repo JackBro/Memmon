@@ -52,6 +52,8 @@ public:
     void setAutoAdjust(bool adjust);
     bool isAutoAdjust() const;
 
+    QByteArray contents();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *);
 
@@ -130,6 +132,8 @@ public:
     void clearHistoryData();
 
     void showPopup(bool show);
+
+    QString contents();
 
 private:
     QWidget* _parent;

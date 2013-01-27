@@ -227,6 +227,16 @@ void XProcessItem::showPopup(bool show)
     }
 }
 
+QString XProcessItem::contents()
+{
+    QString strContents;
+    for(int i = 0; i < _widgets.size(); i++)
+    {
+        strContents += tr(" %1").arg(_widgets.at(i)->text());
+    }
+    return strContents;
+}
+
 /*******************************************/
 /*! XProcessTable                          */
 /*******************************************/
@@ -353,6 +363,12 @@ void XProcessTable::setAutoAdjust(bool adjust)
 bool XProcessTable::isAutoAdjust() const
 {
     return header->isAutoAdjust();
+}
+
+QByteArray XProcessTable::contents()
+{
+    Q_D(XProcessTable);
+    return d->contents();
 }
 
 ///
@@ -912,4 +928,16 @@ void XProcessTablePrivate::removeItemByPid(uint32_t pid)
             return;
         }
     }
+}
+
+QByteArray XProcessTablePrivate::contents()
+{
+    QByteArray array;
+    QString strContents;
+    for(int i = 0; i < _items.size(); i++)
+    {
+        strContents += tr("%1 \n").arg(_items.at(i)->contents());
+    }
+    array.append(strContents);
+    return array;
 }

@@ -1,18 +1,12 @@
-#include "cpuusagefetcher.h"
+#include "processcountfetcher.h"
 
-#include <QDebug>
-
-CpuUsageFetcher::CpuUsageFetcher(QObject *parent) :
+ProcessCountFetcher::ProcessCountFetcher(QObject *parent) :
     BaseFetcher(parent)
 {
-    _query = QStringList() << "cpu" << "get" << "loadpercentage";
-
+    _query = QStringList() << "OS" << "Get" << "NumberOfProcesses";
 }
 
-/*!
- * reimpl
- */
-void CpuUsageFetcher::run()
+void ProcessCountFetcher::run()
 {
     forever
     {
@@ -28,12 +22,12 @@ void CpuUsageFetcher::run()
 
         if(infoList.size() == 1)
         {
-            QString strUsage(infoList.at(0));
+            QString strCount(infoList.at(0));
             bool ok = false;
-            int usage = strUsage.toInt(&ok);
+            int count = strCount.toInt(&ok);
             if(ok)
             {
-                emit sig_setCpuUsage(usage);
+                emit sig_setTotalProcessCount(count);
             }
         }
         sleep(interval());

@@ -1,12 +1,12 @@
 #include "memoryusagefetcher.h"
 
-static const QString kProcess("wmic");
 static const QStringList kQueryAvailable = QStringList() << "Path" << "Win32_PerfRawData_PerfOS_Memory" << "Get" << "AvailableBytes";
 static const QStringList kQueryTotal = QStringList() << "ComputerSystem" << "Get" << "TotalPhysicalMemory";
 
 MemoryUsageFetcher::MemoryUsageFetcher(QObject *parent) :
-    QThread(parent),_interval(1)
+    BaseFetcher(parent)
 {
+
 }
 
 /*!
@@ -62,17 +62,4 @@ double MemoryUsageFetcher::getResult(const QByteArray &result)
         }
     }
     return -1;
-}
-
-/*!
- * public functions
- */
-void MemoryUsageFetcher::setInterval(int sec)
-{
-    _interval = sec;
-}
-
-int MemoryUsageFetcher::interval() const
-{
-    return _interval;
 }

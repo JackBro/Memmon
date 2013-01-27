@@ -35,6 +35,7 @@ void MmUiProxy::initLabels()
 {
     ADD_WIDGET(Label,Label_Status,createLabel(MM::Text::Empty))
     ADD_WIDGET(Label,Label_UpdateInterval,createLabel(MM::Text::Label_UpdateInterval))
+    ADD_WIDGET(Label,Label_TotalProcessCount,createLabel(MM::Text::Empty))
 }
 
 void MmUiProxy::initActions()
@@ -73,6 +74,7 @@ void MmUiProxy::initToolButtons()
     ADD_WIDGET(ToolButton,ToolButton_Stop,createToolButton(MM::Text::TB_StopQuery,QIcon(MM::Icon::StopQuery)))
     ADD_WIDGET(ToolButton,ToolButton_Clear,createToolButton(MM::Text::TB_ClearHistoryData,QIcon(MM::Icon::Clear)))
     ADD_WIDGET(ToolButton,ToolButton_ShowPopup,createToolButton(MM::Text::TB_ShowPopupChart,QIcon(MM::Icon::Chart)))
+    ADD_WIDGET(ToolButton,ToolButton_GeneralInfo,createToolButton(MM::Text::TB_GeneralInfo,QIcon(MM::Icon::GeneralInfo)))
 }
 
 
@@ -152,6 +154,8 @@ QToolButton* MmUiProxy::createToolButton(const QString &strText, const QIcon &ic
 {
     QToolButton* button = new QToolButton((QWidget*)_parent);
     button->setText(strText);
+    button->setAutoRaise(true);
+    button->setAutoRepeat(true);
     button->setIcon(icon);
     connect(button,SIGNAL(clicked()),(QWidget*)_parent,SLOT(slot_toolbuttonHandler()));
     return button;
