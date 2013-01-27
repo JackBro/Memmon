@@ -37,6 +37,7 @@ private:
     void initMenus();
     void initToolbars();
     void initUsageFetcher();
+    void initConnections();
 
     // that's where we put the late initialization variables
     void initLateInitVars();
@@ -84,6 +85,8 @@ private Q_SLOTS:
     void slot_queryStopped();
     void slot_updateCpuUsage(int usage);
     void slot_updateMemUsage(int usage);
+    void slot_showCpuUsageHistory();
+    void slot_showMemUsageHistory();
     friend class MmUiProxy;
 
 };

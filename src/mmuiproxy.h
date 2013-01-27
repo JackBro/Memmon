@@ -15,6 +15,7 @@
 
 #include "../ctrl/pyprog.h"
 #include "../ctrl/pymenu.h"
+#include "../ctrl/pyhistory.h"
 #include "mmdef.h"
 
 #undef PROXY_INLINE
@@ -115,7 +116,9 @@ public:
     enum Widget
     {
         Widget_CpuIndicator,
-        Widget_MemIndicator
+        Widget_MemIndicator,
+        Widget_CpuUsageHistory,
+        Widget_MemUsageHistory
     };
 
     enum ToolButton

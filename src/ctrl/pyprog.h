@@ -32,6 +32,8 @@ protected:
         return QSize(100,20);
     }
 
+    void mousePressEvent(QMouseEvent *);
+
 
 private:
     /// painting functions
@@ -50,6 +52,9 @@ private:
     qreal m_value;
 
     QString m_strText;
+
+Q_SIGNALS:
+    void sig_mousePressed();
 };
 
 #endif // PYPROG_H

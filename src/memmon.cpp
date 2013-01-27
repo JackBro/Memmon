@@ -22,6 +22,7 @@ Memmon::Memmon(QWidget *parent) :
 //    populateTable();
     setupStatusbar();
     initUsageFetcher();
+    initConnections();
 }
 
 void Memmon::createWidgets()
@@ -43,6 +44,23 @@ void Memmon::initSettings()
 {
     setWindowTitle(tr("Memory Monitor"));
     showMaximized();
+
+    PYHistory* cpuHistory = (PYHistory*)USE_WIDGET(Widget,CpuUsageHistory);
+    cpuHistory->setWindowTitle("CPU Usage Monitor");
+    cpuHistory->setCaption(tr("CPU Usage History"));
+    cpuHistory->setChannelCount(1);
+    cpuHistory->setChannelCaption(0,tr("CPU Usage"));
+    cpuHistory->setWindowFlags(Qt::Drawer);
+    cpuHistory->hide();
+
+    PYHistory* memHistory = (PYHistory*)USE_WIDGET(Widget,MemUsageHistory);
+    memHistory->setWindowTitle("Memory Usage Monitor");
+    memHistory->setCaption(tr("Memory Usage History"));
+    memHistory->setChannelCount(1);
+    memHistory->setChannelCaption(0,tr("Memory Usage"));
+    memHistory->setWindowFlags(Qt::Drawer);
+    memHistory->hide();
+
 }
 
 void Memmon::saveSettings()
@@ -117,6 +135,16 @@ void Memmon::initUsageFetcher()
     _memUsageFetcher = new MemoryUsageFetcher(this);
     connect(_memUsageFetcher,SIGNAL(sig_setMemoryUsage(int)),this,SLOT(slot_updateMemUsage(int)));
     _memUsageFetcher->start();
+}
+
+void Memmon::initConnections()
+{
+    PYProg* cpuProg = (PYProg*)USE_WIDGET(Widget,CpuIndicator);
+    connect(cpuProg,SIGNAL(sig_mousePressed()),this,SLOT(slot_showCpuUsageHistory()));
+
+    PYProg* memProg = (PYProg*)USE_WIDGET(Widget,MemIndicator);
+    connect(memProg,SIGNAL(sig_mousePressed()),this,SLOT(slot_showMemUsageHistory()));
+
 }
 
 void Memmon::initLateInitVars()
@@ -409,9 +437,39 @@ void Memmon::slot_queryStopped()
 void Memmon::slot_updateCpuUsage(int usage)
 {
     ((PYProg*)USE_WIDGET(Widget,CpuIndicator))->setValue(usage);
+
+    PYHistory* cpuHistory = (PYHistory*)USE_WIDGET(Widget,CpuUsageHistory);
+    cpuHistory->addChannelData(0,usage);
 }
 
 void Memmon::slot_updateMemUsage(int usage)
 {
     ((PYProg*)USE_WIDGET(Widget,MemIndicator))->setValue(usage);
+
+    PYHistory* memHistory = (PYHistory*)USE_WIDGET(Widget,MemUsageHistory);
+    memHistory->addChannelData(0,usage);
+}
+
+void Memmon::slot_showCpuUsageHistory()
+{
+    if(USE_WIDGET(Widget,CpuUsageHistory)->isVisible())
+    {
+        USE_WIDGET(Widget,CpuUsageHistory)->hide();
+    }
+    else
+    {
+        USE_WIDGET(Widget,CpuUsageHistory)->show();
+    }
+}
+
+void Memmon::slot_showMemUsageHistory()
+{
+    if(USE_WIDGET(Widget,MemUsageHistory)->isVisible())
+    {
+        USE_WIDGET(Widget,MemUsageHistory)->hide();
+    }
+    else
+    {
+        USE_WIDGET(Widget,MemUsageHistory)->show();
+    }
 }

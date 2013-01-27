@@ -46,6 +46,12 @@ void PYProg::paintEvent(QPaintEvent *)
     drawBar(&painter);
 }
 
+void PYProg::mousePressEvent(QMouseEvent *e)
+{
+    QWidget::mousePressEvent(e);
+    emit sig_mousePressed();
+}
+
 /*!
   painting functions
 */

@@ -22,6 +22,13 @@ void MmUiProxy::initWidgets()
     PYProg* memProg = new PYProg((QWidget*)_parent);
     memProg->setToolTip("Memory Usage");
     ADD_WIDGET(Widget,Widget_MemIndicator,memProg)
+
+    PYHistory* cpuHistory = new PYHistory((QWidget*)_parent);
+    ADD_WIDGET(Widget,Widget_CpuUsageHistory,cpuHistory)
+
+    PYHistory* memHistory = new PYHistory((QWidget*)_parent);
+    ADD_WIDGET(Widget,Widget_MemUsageHistory,memHistory)
+
 }
 
 void MmUiProxy::initLabels()
