@@ -15,6 +15,7 @@
 #include "logoutputwindow.h"
 #include "infoquerydock.h"
 #include "mmuiproxy.h"
+#include "mmvarproxy.h"
 
 class Memmon : public QMainWindow
 {
@@ -58,32 +59,6 @@ private:
 private:
     XProcessTable* _processTable;
 
-
-    QMenu* _fileMenu;
-    QAction* _exitAct;
-
-    QMenu* _configMenu;
-    QAction* _selectColumnAct;
-
-    QMenu* _windowMenu;
-    QAction* _memUtilAct;
-    QAction* _logDockAct;
-    QAction* _wmiQueryAct;
-
-    QMenu* _aboutMenu;
-    QAction* _helpAct;
-    QAction* _aboutThisAct;
-
-    QToolBar* _toolBar;
-    QLabel* _updateIntervalLabel;
-    QComboBox* _updateIntervalCombo;
-    QToolButton* _startButton;
-    QToolButton* _stopButton;
-    QToolButton* _clearButton;
-    QToolButton* _showPopupButton;
-
-    QStringList _columns;
-
     SelectColumnDialog* _selectColumnDialog;
     QueryManager* _queryManager;
 
@@ -91,7 +66,8 @@ private:
     LogOutputWindow* _logDock;
     InfoQueryDock* _wmiQueryDock;
 
-    MmUiProxy _uiProxy;
+    MmUiProxy* _uiProxy;
+    MmVarProxy _varProxy;
 
 
 
@@ -102,6 +78,7 @@ private Q_SLOTS:
     void slot_updateIntervalChanged(int index);
     void slot_queryStopped();
 
+    friend class MmUiProxy;
 
 };
 

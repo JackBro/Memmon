@@ -101,6 +101,7 @@ void QueryManager::setColumns(const QStringList &columns)
     _columns = columns;
     _table->clear();
     _table->setColumns(columns);
+    _table->setAutoAdjust(true);
 
     _processItems.clear();
     _pids.clear();

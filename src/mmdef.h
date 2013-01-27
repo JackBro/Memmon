@@ -33,15 +33,11 @@ namespace MM
     namespace Text
     {
 
-        DECLARE_STRING(Menu_File,"File")
         DECLARE_STRING(File_Exit,"Exit")
-        DECLARE_STRING(Menu_Config,"Configurations")
         DECLARE_STRING(Config_SelectColumn,"Select Columns")
-        DECLARE_STRING(Menu_Window,"Window")
         DECLARE_STRING(Window_Log,"Query Log")
         DECLARE_STRING(Window_MemoryUtility,"Memory Utility")
         DECLARE_STRING(Window_WMIQuery,"WMI Query")
-        DECLARE_STRING(Menu_About,"About")
         DECLARE_STRING(About_Help,"Help")
         DECLARE_STRING(About_This,"About this")
 
@@ -63,8 +59,10 @@ namespace MM
         DECLARE_STRING(Title_WMIQueryWindow,"WMI Query")
         DECLARE_STRING(Title_LogOutput,"Log Output")
 
+        // qlabel
         DECLARE_STRING(Label_ProcessList,"Process List:")
         DECLARE_STRING(Label_Columns,"Columns:")
+        DECLARE_STRING(Label_UpdateInterval,"Update Interval:")
 
         DECLARE_STRING(Info_AboutThis,"<h1>Memory Monitor</h1><p><b>Copyright by Kimtaikee 2012</b>")
 
@@ -76,8 +74,34 @@ namespace MM
 
         // qaction
         DECLARE_STRING(Action_Export,"Export")
-    }
+        DECLARE_STRING(Action_Exit,"Exit")
+        DECLARE_STRING(Action_SelectColumn,"Select Columns")
+        DECLARE_STRING(Action_MemoryUtility,"Memory Utility")
+        DECLARE_STRING(Action_WmiQuery,"WMI Query")
+        DECLARE_STRING(Action_QueryLog,"Query Log")
+        DECLARE_STRING(Action_AboutThis,"About This")
+        DECLARE_STRING(Action_Help,"Help")
 
+
+        // qmenu
+        DECLARE_STRING(Menu_File,"File")
+        DECLARE_STRING(Menu_Config,"Configurations")
+        DECLARE_STRING(Menu_Window,"Window")
+        DECLARE_STRING(Menu_About,"About")
+
+        // qtoolbutton
+        DECLARE_STRING(ToolButton_Start,"Start Query")
+        DECLARE_STRING(ToolButton_Stop,"Stop Query")
+        DECLARE_STRING(ToolButton_Clear,"Clear History Data")
+        DECLARE_STRING(ToolButton_Popup,"Sow Popup Chart")
+
+        // qcombobox
+
+        // qtoolbar
+        DECLARE_STRING(ToolBar_Tool,"Tool")
+
+
+    }
 
     namespace Constant
     {
@@ -101,8 +125,20 @@ namespace MM
                                                          << "ReadOperationCount" << "ReadTransferCount" << "VirtualSize"
                                                          << "WorkingSetSize" << "WriteOperationCount" << "WriteTransferCount";
         const QStringList MonitorRefreshColumns = QStringList() << "Name" << "ProcessID";
+    }
 
-
+    namespace Icon
+    {
+        DECLARE_STRING(Clear,":/images/clear.png")
+        DECLARE_STRING(Save,":/images/save.png")
+        DECLARE_STRING(Process,":/images/process.png")
+        DECLARE_STRING(StartQuery,":/images/start_query.png")
+        DECLARE_STRING(StopQuery,":/images/stop_query.png")
+        DECLARE_STRING(Open,":/images/open.png")
+        DECLARE_STRING(Pin,":/images/pin.png")
+        DECLARE_STRING(Chart,":/images/chart.png")
+        DECLARE_STRING(Close,":/images/close.png")
+        DECLARE_STRING(ExportImage,":/images/export_image.png")
     }
 
 }

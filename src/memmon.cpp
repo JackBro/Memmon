@@ -7,6 +7,9 @@
 #include <QStatusBar>
 #include <QMessageBox>
 
+#undef USE_WIDGET
+#define USE_WIDGET(WIDGET_NAME,WIDGET_ENUM) _uiProxy->get ## WIDGET_NAME(MmUiProxy :: WIDGET_NAME ## _ ## WIDGET_ENUM)
+
 Memmon::Memmon(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -30,6 +33,7 @@ void Memmon::createWidgets()
 
 void Memmon::initVars()
 {
+    _uiProxy = new MmUiProxy(this);
     _queryManager = new QueryManager(this);
     connect(_queryManager,SIGNAL(sig_queryStopped()),this,SLOT(slot_queryStopped()));
 }
@@ -50,88 +54,56 @@ void Memmon::initMenus()
 {
 
     /// add file menu
-    _fileMenu = new QMenu(MM::Text::Menu_File,this);
-
-    _exitAct = createAction(MM::Text::File_Exit);
-    _exitAct->setShortcut(QKeySequence::Quit);
-
-
-    _fileMenu->addAction(_uiProxy.getAction(MmUiProxy::Action_Export));
-    _fileMenu->addSeparator();
-    _fileMenu->addAction(_exitAct);
-    menuBar()->addMenu(_fileMenu);
+    USE_WIDGET(Menu,File)->addAction(USE_WIDGET(Action,Export));
+    USE_WIDGET(Menu,File)->addSeparator();
+    USE_WIDGET(Menu,File)->addAction(USE_WIDGET(Action,Exit));
+    menuBar()->addMenu(USE_WIDGET(Menu,File));
 
     /// add config menu
-    _configMenu = new QMenu(MM::Text::Menu_Config,this);
-    _selectColumnAct = createAction(MM::Text::Config_SelectColumn);
-    _configMenu->addAction(_selectColumnAct);
+    USE_WIDGET(Menu,Config)->addAction(USE_WIDGET(Action,SelectColumns));
 
-    menuBar()->addMenu(_configMenu);
+    menuBar()->addMenu(USE_WIDGET(Menu,Config));
 
     /// add window menu
-    _windowMenu = new QMenu(MM::Text::Menu_Window,this);
+    USE_WIDGET(Menu,Window)->addAction(USE_WIDGET(Action,MemUtil));
+    USE_WIDGET(Menu,Window)->addAction(USE_WIDGET(Action,WmiQuery));
+    USE_WIDGET(Menu,Window)->addAction(USE_WIDGET(Action,LogDock));
 
-    _memUtilAct = createAction(MM::Text::Window_MemoryUtility);
-    _memUtilAct->setCheckable(true);
-
-    _logDockAct = createAction(MM::Text::Window_Log);
-    _logDockAct->setCheckable(true);
-
-    _wmiQueryAct = createAction(MM::Text::Window_WMIQuery);
-    _wmiQueryAct->setCheckable(true);
-
-    _windowMenu->addAction(_memUtilAct);
-    _windowMenu->addAction(_wmiQueryAct);
-    _windowMenu->addAction(_logDockAct);
-
-    menuBar()->addMenu(_windowMenu);
+    menuBar()->addMenu(USE_WIDGET(Menu,Window));
 
     /// add about menu
-    _aboutMenu = new QMenu(MM::Text::Menu_About,this);
-    _aboutThisAct = createAction(MM::Text::About_This);
-    _helpAct = createAction(MM::Text::About_Help);
+    USE_WIDGET(Menu,About)->addAction(USE_WIDGET(Action,AboutThis));
+    USE_WIDGET(Menu,About)->addAction(USE_WIDGET(Action,Help));
 
-    _aboutMenu->addAction(_aboutThisAct);
-    _aboutMenu->addAction(_helpAct);
-
-    menuBar()->addMenu(_aboutMenu);
+    menuBar()->addMenu(USE_WIDGET(Menu,About));
 }
 
 void Memmon::initToolbars()
 {
     /// add tools toolbar
-    _toolBar = new QToolBar(MM::Text::ToolBar_Tools,this);
-    configToolbar(_toolBar);
-    _updateIntervalLabel = new QLabel(MM::Text::UpdateIntervalLabel,this);
-    _updateIntervalCombo = new QComboBox(this);
+    configToolbar(USE_WIDGET(ToolBar,Tool));
 
     QStringList choice ;
     choice << "1s" << "3s" << "5s";
+    USE_WIDGET(ComboBox,UpdateInterval)->addItems(choice);
 
-    _updateIntervalCombo->addItems(choice);
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Label,UpdateInterval));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ComboBox,UpdateInterval));
+    USE_WIDGET(ToolBar,Tool)->addSeparator();
 
-    _toolBar->addWidget(_updateIntervalLabel);
-    _toolBar->addWidget(_updateIntervalCombo);
-    _toolBar->addSeparator();
+    USE_WIDGET(ToolButton,Start)->setEnabled(true);
+    USE_WIDGET(ToolButton,Stop)->setEnabled(false);
 
-    _startButton = createToolButton(MM::Text::TB_StartQuery,QIcon(":/images/start_query.png"),MM::Text::TB_StartQuery);
-    _stopButton = createToolButton(MM::Text::TB_StopQuery,QIcon(":/images/stop_query.png"),MM::Text::TB_StopQuery);
-    _stopButton->setEnabled(false);
-    _startButton->setEnabled(true);
+    USE_WIDGET(ToolButton,ShowPopup)->setCheckable(true);
 
-    _clearButton = createToolButton(MM::Text::TB_ClearHistoryData,QIcon(":/images/clear.png"),MM::Text::TB_ClearHistoryData);
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,Start));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,Stop));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,Clear));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,ShowPopup));
 
-    _showPopupButton = createToolButton(MM::Text::TB_ShowPopupChart,QIcon(":/images/chart.png"),MM::Text::TB_ShowPopupChart);
-    _showPopupButton->setCheckable(true);
+    addToolBar(USE_WIDGET(ToolBar,Tool));
 
-    _toolBar->addWidget(_startButton);
-    _toolBar->addWidget(_stopButton);
-    _toolBar->addWidget(_clearButton);
-    _toolBar->addWidget(_showPopupButton);
-
-    addToolBar(_toolBar);
-
-    connect(_updateIntervalCombo,SIGNAL(currentIndexChanged(int)),this,SLOT(slot_updateIntervalChanged(int)));
+    connect(USE_WIDGET(ComboBox,UpdateInterval),SIGNAL(currentIndexChanged(int)),this,SLOT(slot_updateIntervalChanged(int)));
 
 }
 
@@ -180,7 +152,7 @@ void Memmon::showLogWindow()
     if(_logDock == 0)
     {
         _logDock = new LogOutputWindow(this);
-        _logDock->setAction(_logDockAct);
+        _logDock->setAction(USE_WIDGET(Action,LogDock));
         addDockWidget(Qt::BottomDockWidgetArea,_logDock);
     }
 
@@ -192,7 +164,7 @@ void Memmon::showMemoryUtilityWindow()
     if(_mmDock == 0)
     {
         _mmDock = new MemoryMonitorDock(this);
-        _mmDock->setAction(_memUtilAct);
+        _mmDock->setAction(USE_WIDGET(Action,MemUtil));
         addDockWidget(Qt::BottomDockWidgetArea,_mmDock);
     }
 
@@ -214,7 +186,7 @@ void Memmon::showWMIQueryWindow()
     if(_wmiQueryDock == 0)
     {
         _wmiQueryDock = new InfoQueryDock(this);
-        _wmiQueryDock->setAction(_wmiQueryAct);
+        _wmiQueryDock->setAction(USE_WIDGET(Action,MemUtil));
         addDockWidget(Qt::BottomDockWidgetArea,_wmiQueryDock);
     }
 
@@ -280,21 +252,21 @@ void Memmon::showStatus(const QString &strStatus)
 
 void Memmon::setupStatusbar()
 {
-    statusBar()->addWidget(_uiProxy.getLabel(MmUiProxy::Label_Status));
-    _uiProxy.getLabel(MmUiProxy::Label_Status)->setText("Status: Stopped ");
-    statusBar()->addWidget(_uiProxy.getWidget(MmUiProxy::Widget_CpuIndicator));
-    statusBar()->addWidget(_uiProxy.getWidget(MmUiProxy::Widget_MemIndicator));
+    statusBar()->addWidget(USE_WIDGET(Label,Status));
+    USE_WIDGET(Label,Status)->setText("Status: Stopped ");
+    statusBar()->addWidget(USE_WIDGET(Widget,CpuIndicator));
+    statusBar()->addWidget(USE_WIDGET(Widget,MemIndicator));
 }
 
 void Memmon::updateStatus(bool running)
 {
     if(running)
     {
-        _uiProxy.getLabel(MmUiProxy::Label_Status)->setText("Status: Running ");
+        USE_WIDGET(Label,Status)->setText("Status: Running ");
     }
     else
     {
-        _uiProxy.getLabel(MmUiProxy::Label_Status)->setText("Status: Stoppped ");
+        USE_WIDGET(Label,Status)->setText("Status: Stoppped ");
     }
 }
 
@@ -316,31 +288,31 @@ void Memmon::slot_toolbuttonHandler()
 {
     QToolButton* who = qobject_cast<QToolButton*>(sender());
 
-    if(who == _startButton)
+    if(who == USE_WIDGET(ToolButton,Start))
     {
         _queryManager->start();
         who->setEnabled(false);
-        _stopButton->setEnabled(true);
+        USE_WIDGET(ToolButton,Stop)->setEnabled(true);
         updateStatus(true);
     }
 
-    if(who == _stopButton)
+    if(who == USE_WIDGET(ToolButton,Stop))
     {
         who->setEnabled(false);
         _queryManager->stop();
-        _startButton->setEnabled(true);
+        USE_WIDGET(ToolButton,Start)->setEnabled(true);
         updateStatus(false);
     }
 
-    if(who == _clearButton)
+    if(who == USE_WIDGET(ToolButton,Clear))
     {
         showStatus(MM::Text::Status_ClearHistoryData);
         _queryManager->clearHistoryData();
     }
 
-    if(who == _showPopupButton)
+    if(who == USE_WIDGET(ToolButton,ShowPopup))
     {
-        if(_showPopupButton->isChecked())
+        if(USE_WIDGET(ToolButton,ShowPopup)->isChecked())
         {
             showStatus(MM::Text::Status_ShowPopup);
             _queryManager->showPopup(true);
@@ -357,37 +329,37 @@ void Memmon::slot_actionHandler()
 {
     QAction* who = qobject_cast<QAction*>(sender());
 
-    if(who == _exitAct)
+    if(who == USE_WIDGET(Action,Exit))
     {
         close();
     }
 
-    if(who == _selectColumnAct)
+    if(who == USE_WIDGET(Action,SelectColumns))
     {
         showSelectColumnDialog();
     }
 
-    if(who == _logDockAct)
+    if(who == USE_WIDGET(Action,LogDock))
     {
         showLogWindow();
     }
 
-    if(who == _memUtilAct)
+    if(who == USE_WIDGET(Action,MemUtil))
     {
         showMemoryUtilityWindow();
     }
 
-    if(who == _wmiQueryAct)
+    if(who == USE_WIDGET(Action,WmiQuery))
     {
         showWMIQueryWindow();
     }
 
-    if(who == _helpAct)
+    if(who == USE_WIDGET(Action,Help))
     {
         showHelp();
     }
 
-    if(who == _aboutThisAct)
+    if(who == USE_WIDGET(Action,AboutThis))
     {
         showAboutThis();
     }
@@ -396,7 +368,7 @@ void Memmon::slot_actionHandler()
 
 void Memmon::slot_setColumns(const QStringList &columns)
 {
-    _columns = columns;
+    _varProxy.columns = columns;
     _queryManager->setColumns(columns);
 }
 
@@ -418,7 +390,7 @@ void Memmon::slot_updateIntervalChanged(int index)
 
 void Memmon::slot_queryStopped()
 {
-    _startButton->setEnabled(true);
-    _stopButton->setEnabled(false);
+    USE_WIDGET(ToolButton,Start)->setEnabled(true);
+    USE_WIDGET(ToolButton,Stop)->setEnabled(false);
     updateStatus(false);
 }
