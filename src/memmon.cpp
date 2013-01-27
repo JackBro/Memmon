@@ -21,6 +21,7 @@ Memmon::Memmon(QWidget *parent) :
     initToolbars();
 //    populateTable();
     setupStatusbar();
+    initUsageFetcher();
 }
 
 void Memmon::createWidgets()
@@ -107,6 +108,16 @@ void Memmon::initToolbars()
 
 }
 
+void Memmon::initUsageFetcher()
+{
+    _cpuUsageFetcher = new CpuUsageFetcher(this);
+    connect(_cpuUsageFetcher,SIGNAL(sig_setCpuUsage(int)),this,SLOT(slot_updateCpuUsage(int)));
+    _cpuUsageFetcher->start();
+
+    _memUsageFetcher = new MemoryUsageFetcher(this);
+    connect(_memUsageFetcher,SIGNAL(sig_setMemoryUsage(int)),this,SLOT(slot_updateMemUsage(int)));
+    _memUsageFetcher->start();
+}
 
 void Memmon::initLateInitVars()
 {
@@ -254,8 +265,8 @@ void Memmon::setupStatusbar()
 {
     statusBar()->addWidget(USE_WIDGET(Label,Status));
     USE_WIDGET(Label,Status)->setText("Status: Stopped ");
-    statusBar()->addWidget(USE_WIDGET(Widget,CpuIndicator));
-    statusBar()->addWidget(USE_WIDGET(Widget,MemIndicator));
+    statusBar()->addPermanentWidget(USE_WIDGET(Widget,CpuIndicator));
+    statusBar()->addPermanentWidget(USE_WIDGET(Widget,MemIndicator));
 }
 
 void Memmon::updateStatus(bool running)
@@ -393,4 +404,14 @@ void Memmon::slot_queryStopped()
     USE_WIDGET(ToolButton,Start)->setEnabled(true);
     USE_WIDGET(ToolButton,Stop)->setEnabled(false);
     updateStatus(false);
+}
+
+void Memmon::slot_updateCpuUsage(int usage)
+{
+    ((PYProg*)USE_WIDGET(Widget,CpuIndicator))->setValue(usage);
+}
+
+void Memmon::slot_updateMemUsage(int usage)
+{
+    ((PYProg*)USE_WIDGET(Widget,MemIndicator))->setValue(usage);
 }

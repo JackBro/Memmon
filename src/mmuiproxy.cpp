@@ -16,9 +16,11 @@ MmUiProxy::MmUiProxy(Memmon *parent) :
 void MmUiProxy::initWidgets()
 {
     PYProg* cpuProg = new PYProg((QWidget*)_parent);
+    cpuProg->setToolTip("CPU Usage");
     ADD_WIDGET(Widget,Widget_CpuIndicator,cpuProg)
 
     PYProg* memProg = new PYProg((QWidget*)_parent);
+    memProg->setToolTip("Memory Usage");
     ADD_WIDGET(Widget,Widget_MemIndicator,memProg)
 }
 

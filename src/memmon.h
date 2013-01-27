@@ -16,6 +16,8 @@
 #include "infoquerydock.h"
 #include "mmuiproxy.h"
 #include "mmvarproxy.h"
+#include "cpuusagefetcher.h"
+#include "memoryusagefetcher.h"
 
 class Memmon : public QMainWindow
 {
@@ -34,6 +36,7 @@ private:
     void saveSettings();
     void initMenus();
     void initToolbars();
+    void initUsageFetcher();
 
     // that's where we put the late initialization variables
     void initLateInitVars();
@@ -69,6 +72,8 @@ private:
     MmUiProxy* _uiProxy;
     MmVarProxy _varProxy;
 
+    CpuUsageFetcher* _cpuUsageFetcher;
+    MemoryUsageFetcher* _memUsageFetcher;
 
 
 private Q_SLOTS:
@@ -77,7 +82,8 @@ private Q_SLOTS:
     void slot_setColumns(const QStringList& columns);
     void slot_updateIntervalChanged(int index);
     void slot_queryStopped();
-
+    void slot_updateCpuUsage(int usage);
+    void slot_updateMemUsage(int usage);
     friend class MmUiProxy;
 
 };

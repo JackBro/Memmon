@@ -27,7 +27,9 @@ SOURCES +=  $$PWD/main.cpp \
             $$PWD/notifydockwidget.cpp \
             $$PWD/infoquerydock.cpp \
     src/mmuiproxy.cpp \
-    src/mmvarproxy.cpp
+    src/mmvarproxy.cpp \
+    src/cpuusagefetcher.cpp \
+    src/memoryusagefetcher.cpp
 
 
 
@@ -58,4 +60,10 @@ HEADERS += \
             $$PWD/infoquerydock.h \
             $$PWD/notifydockwidget.h \
     src/mmuiproxy.h \
-    src/mmvarproxy.h
+    src/mmvarproxy.h \
+    src/cpuusagefetcher.h \
+    src/memoryusagefetcher.h
+
+
+
+
