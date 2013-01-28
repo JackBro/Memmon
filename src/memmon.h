@@ -20,6 +20,7 @@
 #include "memoryusagefetcher.h"
 #include "processcountfetcher.h"
 #include "pyinfopad.h"
+#include "usageinfopad.h"
 
 class Memmon : public QMainWindow
 {
@@ -63,6 +64,7 @@ private:
     void updateStatus(bool running);
     void exportContents();
     void addToInfoPad(int categoryIndex, const QByteArray& output);
+    void showUsageInfoPad();
 
 private:
     XProcessTable* _processTable;
@@ -79,6 +81,7 @@ private:
 
     PYInfoPad* _generalInfoPad;
     QScrollArea* _infoPadContainer;
+    UsageInfoPad* _usageInfoPad;
 
     CpuUsageFetcher* _cpuUsageFetcher;
     MemoryUsageFetcher* _memUsageFetcher;
@@ -97,6 +100,7 @@ private Q_SLOTS:
     void slot_showCpuUsageHistory();
     void slot_showMemUsageHistory();
     void slot_showGeneralInfo();
+    void slot_addUsageWidgets();
     friend class MmUiProxy;
 
 };

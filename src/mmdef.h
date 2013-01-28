@@ -108,6 +108,7 @@ namespace MM
     {
         const int RowHeight = 20;
         const int DefaultRefreshInterval = 5000; // ms
+        const int ExtraSpace = 10;
 
         const QString IDProcess = "ProcessId";
         const QString Name = "Name";

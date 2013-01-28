@@ -31,7 +31,8 @@ SOURCES +=  $$PWD/main.cpp \
     src/cpuusagefetcher.cpp \
     src/memoryusagefetcher.cpp \
     src/processcountfetcher.cpp \
-    src/basefetcher.cpp
+    src/basefetcher.cpp \
+    src/usageinfopad.cpp
 
 
 
@@ -66,7 +67,8 @@ HEADERS += \
     src/cpuusagefetcher.h \
     src/memoryusagefetcher.h \
     src/processcountfetcher.h \
-    src/basefetcher.h
+    src/basefetcher.h \
+    src/usageinfopad.h
 
 
 

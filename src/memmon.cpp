@@ -7,6 +7,7 @@
 #include <QStatusBar>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDesktopWidget>
 
 #undef USE_WIDGET
 #define USE_WIDGET(WIDGET_NAME,WIDGET_ENUM) _uiProxy->get ## WIDGET_NAME(MmUiProxy :: WIDGET_NAME ## _ ## WIDGET_ENUM)
@@ -23,7 +24,7 @@ Memmon::Memmon(QWidget *parent) :
     initSettings();
     initMenus();
     initToolbars();
-//    populateTable();
+    //    populateTable();
     setupStatusbar();
     initUsageFetcher();
     initConnections();
@@ -34,13 +35,14 @@ void Memmon::createWidgets()
     _processTable = new XProcessTable(this);
     setCentralWidget(_processTable);
     _queryManager->setTable(_processTable);
-//    _queryManager->start();
+    //    _queryManager->start();
 }
 
 void Memmon::initVars()
 {
     MM_INIT_VAR(_generalInfoPad,0);
     MM_INIT_VAR(_infoPadContainer,0);
+    MM_INIT_VAR(_usageInfoPad,0);
 
     _uiProxy = new MmUiProxy(this);
     _queryManager = new QueryManager(this);
@@ -312,10 +314,7 @@ void Memmon::setupStatusbar()
     QFont boldFont;
     boldFont.setBold(true);
     USE_WIDGET(Label,TotalProcessCount)->setFont(boldFont);
-
-    statusBar()->addPermanentWidget(USE_WIDGET(Label,TotalProcessCount));
-    statusBar()->addPermanentWidget(USE_WIDGET(Widget,CpuIndicator));
-    statusBar()->addPermanentWidget(USE_WIDGET(Widget,MemIndicator));
+    slot_addUsageWidgets();
 }
 
 void Memmon::updateStatus(bool running)
@@ -367,7 +366,7 @@ void Memmon::addToInfoPad(int categoryIndex, const QByteArray &output)
     captionList.removeFirst();
     valueList.removeFirst();
 
-//    Q_ASSERT(captionList.size() == valueList.size());
+    //    Q_ASSERT(captionList.size() == valueList.size());
 
     for(int i = 0; i < captionList.size(); i++)
     {
@@ -375,9 +374,31 @@ void Memmon::addToInfoPad(int categoryIndex, const QByteArray &output)
     }
 }
 
-void Memmon::closeEvent(QCloseEvent *)
+void Memmon::showUsageInfoPad()
 {
+    if(_usageInfoPad == 0)
+    {
+        _usageInfoPad = new UsageInfoPad(this);
+        connect(_usageInfoPad,SIGNAL(sig_closed()),this,SLOT(slot_addUsageWidgets()));
+    }
 
+    _usageInfoPad->addWidget(USE_WIDGET(Label,TotalProcessCount));
+    _usageInfoPad->addWidget(USE_WIDGET(Widget,CpuIndicator));
+    _usageInfoPad->addWidget(USE_WIDGET(Widget,MemIndicator));
+
+    QDesktopWidget desktop;
+    QRect deskRect = desktop.availableGeometry();
+    QPoint movePoint(deskRect.width() - _usageInfoPad->width() - MM::Constant::ExtraSpace,MM::Constant::ExtraSpace);
+    _usageInfoPad->move(movePoint);
+
+    _usageInfoPad->show();
+}
+
+void Memmon::closeEvent(QCloseEvent *e)
+{
+    showUsageInfoPad();
+    e->ignore();
+    hide();
 }
 
 
@@ -431,7 +452,7 @@ void Memmon::slot_actionHandler()
 
     if(who == USE_WIDGET(Action,Exit))
     {
-        close();
+        exit(0);
     }
 
     if(who == USE_WIDGET(Action,SelectColumns))
@@ -580,4 +601,18 @@ void Memmon::slot_showGeneralInfo()
 
 
     _infoPadContainer->show();
+}
+
+void Memmon::slot_addUsageWidgets()
+{
+    statusBar()->addPermanentWidget(USE_WIDGET(Label,TotalProcessCount));
+    statusBar()->addPermanentWidget(USE_WIDGET(Widget,CpuIndicator));
+    statusBar()->addPermanentWidget(USE_WIDGET(Widget,MemIndicator));
+
+    if(_usageInfoPad && _usageInfoPad->isVisible())
+    {
+        _usageInfoPad->hide();
+    }
+
+    show();
 }

@@ -42,6 +42,7 @@ int main(int argc,char** argv)
         exit(0);
     }
     app.setStyleSheet(readStyle());
+    app.setQuitOnLastWindowClosed(false);
 
     QTextCodec::setCodecForTr(QTextCodec::codecForName("Utf8"));
 
