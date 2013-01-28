@@ -28,12 +28,14 @@ SOURCES +=  $$PWD/main.cpp \
             $$PWD/infoquerydock.cpp \
             src/mmuiproxy.cpp \
             src/mmvarproxy.cpp \
-            src/usageinfopad.cpp
+            src/usageinfopad.cpp \
+    src/infofetcher/drivercountfetcher.cpp
 
 SOURCES += $$PWD/infofetcher/cpuusagefetcher.cpp \
            $$PWD/infofetcher/memoryusagefetcher.cpp \
            $$PWD/infofetcher/processcountfetcher.cpp \
            $$PWD/infofetcher/basefetcher.cpp \
+           $$PWD/infofetcher/servicecountfetcher.cpp
 
 
 
@@ -66,12 +68,18 @@ HEADERS += \
             $$PWD/notifydockwidget.h \
             src/mmuiproxy.h \
             src/mmvarproxy.h \
-            src/usageinfopad.h
+            src/usageinfopad.h \
+    src/infofetcher/drivercountfetcher.h
 
 HEADERS += $$PWD/infofetcher/cpuusagefetcher.h \
            $$PWD/infofetcher/memoryusagefetcher.h \
            $$PWD/infofetcher/processcountfetcher.h \
            $$PWD/infofetcher/basefetcher.h \
+           $$PWD/infofetcher/servicecountfetcher.h
+
+
+
+
 
 
 

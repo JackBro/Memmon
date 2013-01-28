@@ -29,3 +29,17 @@ QStringList BaseFetcher::query() const
 {
     return _query;
 }
+
+int BaseFetcher::getQueryResult()
+{
+    QProcess pro;
+    pro.setProcessChannelMode(QProcess::MergedChannels);
+    pro.start(kProcess,query());
+    pro.waitForFinished();
+    QString strOutput(pro.readAllStandardOutput());
+    QStringList infoList = strOutput.split('\n');
+    infoList.removeFirst();
+    infoList.removeLast();
+    infoList.removeLast();
+    return infoList.size();
+}

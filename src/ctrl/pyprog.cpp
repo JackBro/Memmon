@@ -33,6 +33,9 @@ void PYProg::initVariables()
     m_min = 0;
     m_max = 100;
     m_value = 0;
+
+    setMaximumHeight(20);
+    setMinimumWidth(120);
 }
 
 /*!

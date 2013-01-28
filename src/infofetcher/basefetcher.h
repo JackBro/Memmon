@@ -20,6 +20,8 @@ public:
 
     static QString kProcess;
 
+    int getQueryResult();
+
 protected:
     int _interval;
     QStringList _query;

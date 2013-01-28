@@ -8,12 +8,28 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDesktopWidget>
+#include <QApplication>
 
 #undef USE_WIDGET
 #define USE_WIDGET(WIDGET_NAME,WIDGET_ENUM) _uiProxy->get ## WIDGET_NAME(MmUiProxy :: WIDGET_NAME ## _ ## WIDGET_ENUM)
 
 #undef MM_INIT_VAR
 #define MM_INIT_VAR(VAR,VALUE) VAR = VALUE
+
+void setWindowCenter(QWidget *window,
+        double widthScale = 1, double heightScale = 1)
+{
+    double ws = widthScale < 0.1 ? 0.1 : widthScale;
+    double hs = heightScale < 0.1 ? 0.1 : heightScale;
+    ws = ws > 1 ? 1 : ws;
+    hs = hs > 1 ? 1 : hs;
+    QRect rect = QApplication::desktop()->availableGeometry();
+    int iTitleHeight = window->style()->pixelMetric(QStyle::PM_TitleBarHeight);
+    window->setGeometry(rect.width() * (1 - ws) / 2,
+            rect.height() * (1 - hs) / 2 + iTitleHeight,
+            rect.width() * ws,
+            rect.height() * hs - iTitleHeight);
+}
 
 Memmon::Memmon(QWidget *parent) :
     QMainWindow(parent)
@@ -148,6 +164,14 @@ void Memmon::initUsageFetcher()
     _processCountFetcher = new ProcessCountFetcher(this);
     connect(_processCountFetcher,SIGNAL(sig_setTotalProcessCount(int)),this,SLOT(slot_setTotalProcessCount(int)));
     _processCountFetcher->start();
+
+    _serviceCountFetcher = new ServiceCountFetcher(this);
+    connect(_serviceCountFetcher,SIGNAL(sig_setRunningServiceCount(int)),this,SLOT(slot_setRunningServiceCount(int)));
+    _serviceCountFetcher->start();
+
+    _driverCountFetcher = new DriverCountFetcher(this);
+    connect(_driverCountFetcher,SIGNAL(sig_setRunningDriverCount(int)),this,SLOT(slot_setRunningDriverCount(int)));
+    _driverCountFetcher->start();
 }
 
 void Memmon::initConnections()
@@ -383,12 +407,14 @@ void Memmon::showUsageInfoPad()
     }
 
     _usageInfoPad->addWidget(USE_WIDGET(Label,TotalProcessCount));
+    _usageInfoPad->addWidget(USE_WIDGET(Label,RunningServiceCount));
+    _usageInfoPad->addWidget(USE_WIDGET(Label,RunningDriverCount));
     _usageInfoPad->addWidget(USE_WIDGET(Widget,CpuIndicator));
     _usageInfoPad->addWidget(USE_WIDGET(Widget,MemIndicator));
 
     QDesktopWidget desktop;
     QRect deskRect = desktop.availableGeometry();
-    QPoint movePoint(deskRect.width() - _usageInfoPad->width() - MM::Constant::ExtraSpace,MM::Constant::ExtraSpace);
+    QPoint movePoint(deskRect.width() - _usageInfoPad->width() - MM::Constant::ExtraSpace,deskRect.height() - _usageInfoPad->height() - MM::Constant::ExtraSpace);
     _usageInfoPad->move(movePoint);
 
     _usageInfoPad->show();
@@ -542,6 +568,16 @@ void Memmon::slot_setTotalProcessCount(int count)
     ((QLabel*)(USE_WIDGET(Label,TotalProcessCount)))->setText(tr("Number of Processes: %1").arg(count));
 }
 
+void Memmon::slot_setRunningServiceCount(int count)
+{
+    ((QLabel*)(USE_WIDGET(Label,RunningServiceCount)))->setText(tr("Running Services: %1").arg(count));
+}
+
+void Memmon::slot_setRunningDriverCount(int count)
+{
+    ((QLabel*)(USE_WIDGET(Label,RunningDriverCount)))->setText(tr("Running Drivers: %1").arg(count));
+}
+
 void Memmon::slot_showCpuUsageHistory()
 {
     if(USE_WIDGET(Widget,CpuUsageHistory)->isVisible())
@@ -550,6 +586,7 @@ void Memmon::slot_showCpuUsageHistory()
     }
     else
     {
+        setWindowCenter(USE_WIDGET(Widget,CpuUsageHistory),0.4,0.5);
         USE_WIDGET(Widget,CpuUsageHistory)->show();
     }
 }
@@ -562,6 +599,7 @@ void Memmon::slot_showMemUsageHistory()
     }
     else
     {
+        setWindowCenter(USE_WIDGET(Widget,MemUsageHistory),0.4,0.5);
         USE_WIDGET(Widget,MemUsageHistory)->show();
     }
 }
@@ -606,6 +644,8 @@ void Memmon::slot_showGeneralInfo()
 void Memmon::slot_addUsageWidgets()
 {
     statusBar()->addPermanentWidget(USE_WIDGET(Label,TotalProcessCount));
+    statusBar()->addPermanentWidget(USE_WIDGET(Label,RunningServiceCount));
+    statusBar()->addPermanentWidget(USE_WIDGET(Label,RunningDriverCount));
     statusBar()->addPermanentWidget(USE_WIDGET(Widget,CpuIndicator));
     statusBar()->addPermanentWidget(USE_WIDGET(Widget,MemIndicator));
 

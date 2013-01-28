@@ -19,6 +19,8 @@
 #include "infofetcher/cpuusagefetcher.h"
 #include "infofetcher/memoryusagefetcher.h"
 #include "infofetcher/processcountfetcher.h"
+#include "infofetcher/servicecountfetcher.h"
+#include "infofetcher/drivercountfetcher.h"
 #include "pyinfopad.h"
 #include "usageinfopad.h"
 
@@ -86,6 +88,9 @@ private:
     CpuUsageFetcher* _cpuUsageFetcher;
     MemoryUsageFetcher* _memUsageFetcher;
     ProcessCountFetcher* _processCountFetcher;
+    ServiceCountFetcher* _serviceCountFetcher;
+    DriverCountFetcher* _driverCountFetcher;
+
 
 
 private Q_SLOTS:
@@ -97,6 +102,8 @@ private Q_SLOTS:
     void slot_updateCpuUsage(int usage);
     void slot_updateMemUsage(int usage);
     void slot_setTotalProcessCount(int count);
+    void slot_setRunningServiceCount(int count);
+    void slot_setRunningDriverCount(int count);
     void slot_showCpuUsageHistory();
     void slot_showMemUsageHistory();
     void slot_showGeneralInfo();

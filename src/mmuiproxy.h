@@ -111,7 +111,9 @@ public:
     {
         Label_Status,
         Label_UpdateInterval,
-        Label_TotalProcessCount
+        Label_TotalProcessCount,
+        Label_RunningServiceCount,
+        Label_RunningDriverCount
     };
 
     enum Widget

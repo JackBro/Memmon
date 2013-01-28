@@ -36,6 +36,8 @@ void MmUiProxy::initLabels()
     ADD_WIDGET(Label,Label_Status,createLabel(MM::Text::Empty))
     ADD_WIDGET(Label,Label_UpdateInterval,createLabel(MM::Text::Label_UpdateInterval))
     ADD_WIDGET(Label,Label_TotalProcessCount,createLabel(MM::Text::Empty))
+    ADD_WIDGET(Label,Label_RunningServiceCount,createLabel(MM::Text::Empty))
+    ADD_WIDGET(Label,Label_RunningDriverCount,createLabel(MM::Text::Empty))
 }
 
 void MmUiProxy::initActions()
