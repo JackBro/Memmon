@@ -16,9 +16,9 @@
 #include "infoquerydock.h"
 #include "mmuiproxy.h"
 #include "mmvarproxy.h"
-#include "cpuusagefetcher.h"
-#include "memoryusagefetcher.h"
-#include "processcountfetcher.h"
+#include "infofetcher/cpuusagefetcher.h"
+#include "infofetcher/memoryusagefetcher.h"
+#include "infofetcher/processcountfetcher.h"
 #include "pyinfopad.h"
 #include "usageinfopad.h"
 

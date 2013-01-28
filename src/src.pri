@@ -26,13 +26,15 @@ SOURCES +=  $$PWD/main.cpp \
             $$PWD/logoutputwindow.cpp \
             $$PWD/notifydockwidget.cpp \
             $$PWD/infoquerydock.cpp \
-    src/mmuiproxy.cpp \
-    src/mmvarproxy.cpp \
-    src/cpuusagefetcher.cpp \
-    src/memoryusagefetcher.cpp \
-    src/processcountfetcher.cpp \
-    src/basefetcher.cpp \
-    src/usageinfopad.cpp
+            src/mmuiproxy.cpp \
+            src/mmvarproxy.cpp \
+            src/usageinfopad.cpp
+
+SOURCES += $$PWD/infofetcher/cpuusagefetcher.cpp \
+           $$PWD/infofetcher/memoryusagefetcher.cpp \
+           $$PWD/infofetcher/processcountfetcher.cpp \
+           $$PWD/infofetcher/basefetcher.cpp \
+
 
 
 
@@ -62,13 +64,15 @@ HEADERS += \
             $$PWD/notifydockwidget.h \
             $$PWD/infoquerydock.h \
             $$PWD/notifydockwidget.h \
-    src/mmuiproxy.h \
-    src/mmvarproxy.h \
-    src/cpuusagefetcher.h \
-    src/memoryusagefetcher.h \
-    src/processcountfetcher.h \
-    src/basefetcher.h \
-    src/usageinfopad.h
+            src/mmuiproxy.h \
+            src/mmvarproxy.h \
+            src/usageinfopad.h
+
+HEADERS += $$PWD/infofetcher/cpuusagefetcher.h \
+           $$PWD/infofetcher/memoryusagefetcher.h \
+           $$PWD/infofetcher/processcountfetcher.h \
+           $$PWD/infofetcher/basefetcher.h \
+
 
 
 
