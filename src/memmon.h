@@ -21,6 +21,7 @@
 #include "infofetcher/processcountfetcher.h"
 #include "infofetcher/servicecountfetcher.h"
 #include "infofetcher/drivercountfetcher.h"
+#include "infofetcher/coreusagefetcher.h"
 #include "pyinfopad.h"
 #include "usageinfopad.h"
 
@@ -90,8 +91,7 @@ private:
     ProcessCountFetcher* _processCountFetcher;
     ServiceCountFetcher* _serviceCountFetcher;
     DriverCountFetcher* _driverCountFetcher;
-
-
+    CoreUsageFetcher* _coreUsageFetcher;
 
 private Q_SLOTS:
     void slot_toolbuttonHandler();

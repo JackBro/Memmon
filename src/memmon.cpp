@@ -59,6 +59,7 @@ void Memmon::initVars()
     MM_INIT_VAR(_generalInfoPad,0);
     MM_INIT_VAR(_infoPadContainer,0);
     MM_INIT_VAR(_usageInfoPad,0);
+    MM_INIT_VAR(_coreUsageFetcher,0);
 
     _uiProxy = new MmUiProxy(this);
     _queryManager = new QueryManager(this);
@@ -172,6 +173,7 @@ void Memmon::initUsageFetcher()
     _driverCountFetcher = new DriverCountFetcher(this);
     connect(_driverCountFetcher,SIGNAL(sig_setRunningDriverCount(int)),this,SLOT(slot_setRunningDriverCount(int)));
     _driverCountFetcher->start();
+
 }
 
 void Memmon::initConnections()
@@ -404,6 +406,12 @@ void Memmon::showUsageInfoPad()
     {
         _usageInfoPad = new UsageInfoPad(this);
         connect(_usageInfoPad,SIGNAL(sig_closed()),this,SLOT(slot_addUsageWidgets()));
+
+        _coreUsageFetcher = new CoreUsageFetcher(this);
+        connect(_coreUsageFetcher,SIGNAL(sig_setCoreCount(int)),_usageInfoPad,SLOT(setCoreCount(int)));
+        connect(_coreUsageFetcher,SIGNAL(sig_setCoreUsage(int,int)),_usageInfoPad,SLOT(addCoreUsage(int,int)));
+        _coreUsageFetcher->start();
+
     }
 
     _usageInfoPad->addWidget(USE_WIDGET(Label,TotalProcessCount));

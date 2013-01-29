@@ -4,14 +4,19 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
+#include "ctrl/perfchart.h"
+#include "ctrl/pyhistory.h"
+
 class UsageInfoPad : public QWidget
 {
     Q_OBJECT
 public:
     explicit UsageInfoPad(QWidget *parent = 0);
     
-public:
+public Q_SLOTS:
     void addWidget(QWidget* w);
+    void setCoreCount(int count);
+    void addCoreUsage(int index, int usage);
 
 protected:
     void closeEvent(QCloseEvent *);
@@ -22,6 +27,7 @@ private:
 
 private:
     QVBoxLayout* _layout;
+    PerfChart* _perfChart;
 
 Q_SIGNALS:
     void sig_closed();

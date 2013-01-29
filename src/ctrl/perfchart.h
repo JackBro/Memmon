@@ -109,31 +109,32 @@ protected:
 
     QSize sizeHint() const
     {
-        return QSize(400,400);
+        return QSize(200,200);
     }
 
     QSize minimumSizeHint() const
     {
-        return QSize(300,300);
+        return QSize(120,120);
     }
+
+    void mouseMoveEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *);
 
     /*!
       painting used private functions
       */
 private:
     void drawVariables(QPainter* painter);
-
     void drawBackground(QPainter* painter);
-
     void drawTitles(QPainter* painter);
-
     void drawText(QPainter* painter);
-
     void drawBox(QPainter* painter);
-
     void drawGraph(QPainter* painter);
+    void drawItemBox(QPainter* painter, const QRectF& rect, const QColor& clr);
 
-
+    bool mouseInRects(QMouseEvent* e);
+    int  getClickedCoreIndex(const QString& strTip);
+    QString getClickedRectTip(QMouseEvent* e);
 private:
 
     int     m_nChannelCount;
@@ -163,11 +164,15 @@ private:
 
     bool  m_bUseAntialiasing;
 
+    typedef QPair<QRectF,QString> RectTip;
+    QVector<RectTip> m_rectTips;
+
     /*!
 
       */
 private:
     void initVariables();
+    void initSettings();
 
 };
 

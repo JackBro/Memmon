@@ -29,7 +29,8 @@ SOURCES +=  $$PWD/main.cpp \
             src/mmuiproxy.cpp \
             src/mmvarproxy.cpp \
             src/usageinfopad.cpp \
-    src/infofetcher/drivercountfetcher.cpp
+    src/infofetcher/drivercountfetcher.cpp \
+    src/infofetcher/coreusagefetcher.cpp
 
 SOURCES += $$PWD/infofetcher/cpuusagefetcher.cpp \
            $$PWD/infofetcher/memoryusagefetcher.cpp \
@@ -69,13 +70,16 @@ HEADERS += \
             src/mmuiproxy.h \
             src/mmvarproxy.h \
             src/usageinfopad.h \
-    src/infofetcher/drivercountfetcher.h
+    src/infofetcher/drivercountfetcher.h \
+    src/infofetcher/coreusagefetcher.h
 
 HEADERS += $$PWD/infofetcher/cpuusagefetcher.h \
            $$PWD/infofetcher/memoryusagefetcher.h \
            $$PWD/infofetcher/processcountfetcher.h \
            $$PWD/infofetcher/basefetcher.h \
            $$PWD/infofetcher/servicecountfetcher.h
+
+
 
 
 
