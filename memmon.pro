@@ -5,6 +5,7 @@ INCLUDEPATH = .
 DEPENDPATH = .
 
 include(./src/3dparty/qtsingleapplication/qtsingleapplication.pri)
+include(./src/3dparty/sigar/sigar.pri)
 include(./src/src.pri)
 include(./src/xprocesstable/xprocesstable.pri)
 include(./version.pri)
