@@ -1,5 +1,7 @@
 #include "usageinfopad.h"
 
+#include <QApplication>
+
 static const int kMargin = 0;
 
 UsageInfoPad::UsageInfoPad(QWidget *parent) :
@@ -12,6 +14,12 @@ UsageInfoPad::UsageInfoPad(QWidget *parent) :
 /*!
  * private utility functions
  */
+void UsageInfoPad::initVars()
+{
+    _quitButton = createButton(tr("Quit"));
+    connect(_quitButton,SIGNAL(clicked()),qApp,SLOT(quit()));
+}
+
 void UsageInfoPad::setupLayout()
 {
     _layout = new QVBoxLayout;
@@ -28,6 +36,14 @@ void UsageInfoPad::initSettings()
 {
     setWindowFlags(Qt::Drawer | Qt::WindowStaysOnTopHint);
     setWindowTitle(tr("System Info"));
+}
+
+QPushButton* UsageInfoPad::createButton(const QString &strText, const QIcon &icon)
+{
+    QPushButton* button = new QPushButton(this);
+    button->setText(strText);
+    button->setIcon(icon);
+    return button;
 }
 
 /*!
@@ -61,4 +77,9 @@ void UsageInfoPad::setCoreCount(int count)
 void UsageInfoPad::addCoreUsage(int index, int usage)
 {
     _perfChart->addChannelData(index,usage);
+}
+
+void UsageInfoPad::done()
+{
+
 }
