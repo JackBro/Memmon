@@ -410,6 +410,7 @@ void Memmon::showUsageInfoPad()
         _coreUsageFetcher = new CoreUsageFetcher(this);
         connect(_coreUsageFetcher,SIGNAL(sig_setCoreCount(int)),_usageInfoPad,SLOT(setCoreCount(int)));
         connect(_coreUsageFetcher,SIGNAL(sig_setCoreUsage(int,int)),_usageInfoPad,SLOT(addCoreUsage(int,int)));
+        connect(_usageInfoPad,SIGNAL(sig_safeQuit()),this,SLOT(slot_safeQuit()));
         _coreUsageFetcher->start();
 
     }
@@ -419,6 +420,7 @@ void Memmon::showUsageInfoPad()
     _usageInfoPad->addWidget(USE_WIDGET(Label,RunningDriverCount));
     _usageInfoPad->addWidget(USE_WIDGET(Widget,CpuIndicator));
     _usageInfoPad->addWidget(USE_WIDGET(Widget,MemIndicator));
+    _usageInfoPad->done();
 
     QDesktopWidget desktop;
     QRect deskRect = desktop.availableGeometry();
@@ -426,6 +428,15 @@ void Memmon::showUsageInfoPad()
     _usageInfoPad->move(movePoint);
 
     _usageInfoPad->show();
+}
+
+void Memmon::stopInfoFetcher(QThread *fetcher)
+{
+    if(fetcher)
+    {
+        fetcher->terminate();
+        fetcher->deleteLater();
+    }
 }
 
 void Memmon::closeEvent(QCloseEvent *e)
@@ -645,7 +656,6 @@ void Memmon::slot_showGeneralInfo()
         addToInfoPad(1,pro.readAllStandardOutput());
     }
 
-
     _infoPadContainer->show();
 }
 
@@ -663,4 +673,15 @@ void Memmon::slot_addUsageWidgets()
     }
 
     show();
+}
+
+void Memmon::slot_safeQuit()
+{
+    stopInfoFetcher(_cpuUsageFetcher);
+    stopInfoFetcher(_memUsageFetcher);
+    stopInfoFetcher(_processCountFetcher);
+    stopInfoFetcher(_serviceCountFetcher);
+    stopInfoFetcher(_driverCountFetcher);
+    stopInfoFetcher(_coreUsageFetcher);
+    qApp->exit(0);
 }

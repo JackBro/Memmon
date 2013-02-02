@@ -68,7 +68,7 @@ private:
     void exportContents();
     void addToInfoPad(int categoryIndex, const QByteArray& output);
     void showUsageInfoPad();
-
+    void stopInfoFetcher(QThread* fetcher);
 private:
     XProcessTable* _processTable;
 
@@ -108,6 +108,7 @@ private Q_SLOTS:
     void slot_showMemUsageHistory();
     void slot_showGeneralInfo();
     void slot_addUsageWidgets();
+    void slot_safeQuit();
     friend class MmUiProxy;
 
 };

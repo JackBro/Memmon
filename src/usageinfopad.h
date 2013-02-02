@@ -38,6 +38,7 @@ private:
 
 Q_SIGNALS:
     void sig_closed();
+    void sig_safeQuit();
     
 };
 

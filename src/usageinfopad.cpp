@@ -17,7 +17,7 @@ UsageInfoPad::UsageInfoPad(QWidget *parent) :
 void UsageInfoPad::initVars()
 {
     _quitButton = createButton(tr("Quit"));
-    connect(_quitButton,SIGNAL(clicked()),qApp,SLOT(quit()));
+    connect(_quitButton,SIGNAL(clicked()),this,SIGNAL(sig_safeQuit()));
 }
 
 void UsageInfoPad::setupLayout()
@@ -81,5 +81,9 @@ void UsageInfoPad::addCoreUsage(int index, int usage)
 
 void UsageInfoPad::done()
 {
-
+    initVars();
+    QHBoxLayout* buttonLayout = new QHBoxLayout;
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(_quitButton);
+    _layout->addLayout(buttonLayout);
 }
