@@ -101,6 +101,10 @@ namespace MM
         // qtoolbar
         DECLARE_STRING(ToolBar_Tool,"Tool")
 
+        // general info
+        DECLARE_STRING(Info_AppName,"Memmon")
+        DECLARE_STRING(Info_CorpName,"Doit Inc.")
+
 
     }
 
@@ -142,6 +146,7 @@ namespace MM
         DECLARE_STRING(Close,":/images/close.png")
         DECLARE_STRING(GeneralInfo,":/images/info.png")
         DECLARE_STRING(ExportImage,":/images/export_image.png")
+        DECLARE_STRING(SelectColumn,":/images/select_column.png")
     }
 
 }

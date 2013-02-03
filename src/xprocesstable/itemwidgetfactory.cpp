@@ -2,6 +2,7 @@
 #include "../mmutil.h"
 #include "../mmdef.h"
 #include "datachart.h"
+#include "../util.h"
 
 #include <QVBoxLayout>
 #include <QProcess>
@@ -411,9 +412,5 @@ void PathDisplayWidget::slot_showPath()
     {
         return;
     }
-    QStringList arguments;
-    path.replace('/','\\');
-    arguments << tr("/select,\"%1\"").arg(path);
-    QString strCMD("explorer.exe");
-    QProcess::startDetached(strCMD,arguments);
+    Util::Shell::LocateFile(path);
 }

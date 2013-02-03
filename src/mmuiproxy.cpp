@@ -44,7 +44,7 @@ void MmUiProxy::initActions()
 {
     ADD_WIDGET(Action,Action_Export,createAction(MM::Text::Action_Export,QIcon(MM::Icon::ExportImage)));
     ADD_WIDGET(Action,Action_Exit,createAction(MM::Text::Action_Exit,QIcon(MM::Icon::Close)));
-    ADD_WIDGET(Action,Action_SelectColumns,createAction(MM::Text::SelectColumn));
+    ADD_WIDGET(Action,Action_SelectColumns,createAction(MM::Text::SelectColumn,QIcon(MM::Icon::SelectColumn)));
     ADD_WIDGET(Action,Action_MemUtil,createAction(MM::Text::Action_MemoryUtility));
     ADD_WIDGET(Action,Action_LogDock,createAction(MM::Text::Action_QueryLog));
     ADD_WIDGET(Action,Action_WmiQuery,createAction(MM::Text::Action_WmiQuery));

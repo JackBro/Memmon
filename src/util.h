@@ -16,10 +16,10 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-#include "lteres.h"
+#include "mmdef.h"
 
-const QString gAppName = Lte::String::Info_AppName;
-const QString gCorpName = Lte::String::Info_CompanyName;
+const QString gAppName = MM::Text::Info_AppName;
+const QString gCorpName = MM::Text::Info_CorpName;
 
 namespace Util {
 

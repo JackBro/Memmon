@@ -134,6 +134,7 @@ void Memmon::initToolbars()
 
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Label,UpdateInterval));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ComboBox,UpdateInterval));
+    USE_WIDGET(ToolBar,Tool)->addAction(USE_WIDGET(Action,SelectColumns));
     USE_WIDGET(ToolBar,Tool)->addSeparator();
 
     USE_WIDGET(ToolButton,Start)->setEnabled(true);
@@ -149,7 +150,6 @@ void Memmon::initToolbars()
     addToolBar(USE_WIDGET(ToolBar,Tool));
 
     connect(USE_WIDGET(ComboBox,UpdateInterval),SIGNAL(currentIndexChanged(int)),this,SLOT(slot_updateIntervalChanged(int)));
-
 }
 
 void Memmon::initUsageFetcher()
