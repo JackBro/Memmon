@@ -17,10 +17,12 @@ void MmUiProxy::initWidgets()
 {
     PYProg* cpuProg = new PYProg((QWidget*)_parent);
     cpuProg->setToolTip("CPU Usage");
+    cpuProg->setAnimated(true);
     ADD_WIDGET(Widget,Widget_CpuIndicator,cpuProg)
 
     PYProg* memProg = new PYProg((QWidget*)_parent);
     memProg->setToolTip("Memory Usage");
+    memProg->setAnimated(true);
     ADD_WIDGET(Widget,Widget_MemIndicator,memProg)
 
     PYHistory* cpuHistory = new PYHistory((QWidget*)_parent);

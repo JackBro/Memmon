@@ -8,6 +8,8 @@
 #define PYP_LINE_COUNT 20
 #define PYP_LINE_WIDTH 2
 #define PYP_D_LINE 7
+#define PYP_UPDATE_STEP 10
+#define PYP_UPDATE_INTERVAL 10
 
 #define PYP_LINE_COLOR Qt::black
 #define PYP_BG_COLOR QColor(45,45,45)
@@ -33,14 +35,45 @@ void PYProg::initVariables()
     m_min = 0;
     m_max = 100;
     m_value = 0;
+    m_currValue = 0;
+}
 
-    setMaximumHeight(20);
-    setMinimumWidth(120);
+void PYProg::initAnimationTimer()
+{
+    m_animationTimer = new QTimer(this);
+    m_animationTimer->setInterval(PYP_UPDATE_INTERVAL);
+    connect(m_animationTimer,SIGNAL(timeout()),this,SLOT(slot_updateValue()));
 }
 
 /*!
-  protected functions
-*/
+ * private slot functions
+ */
+void PYProg::slot_updateValue()
+{
+    if(m_isIncreValue)
+    {
+        m_currValue += m_dValue;
+
+        if(m_currValue >= m_value)
+        {
+            m_animationTimer->stop();
+        }
+    }
+    else
+    {
+        m_currValue -= m_dValue;
+
+        if(m_currValue <= m_value)
+        {
+            m_animationTimer->stop();
+        }
+    }
+    update();
+}
+
+/*!
+ * reimpl
+ */
 void PYProg::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -86,16 +119,14 @@ void PYProg::drawBar(QPainter *painter)
     painter->setBrush(PYP_UNDER_BAR_COLOR);
     painter->drawRoundedRect(uRect,PYP_RECT_RADIUS,PYP_RECT_RADIUS);
 
-
     //  DRAW REAL BAR
     qreal range = (m_max - m_min);
     qreal RectWidth = width() - PYP_LEFT_SPACE  - PYP_RIGHT_SPACE * 2 - PYP_TEXT_WIDTH;
     qreal dX = (qreal) RectWidth/range;
 
-
     qreal initX = PYP_LEFT_SPACE;
     QPointF TopLeft(initX,PYP_TOP_SPACE);
-    QPointF BottomRight(initX + dX * m_value,height() - PYP_TOP_SPACE);
+    QPointF BottomRight(initX + dX * m_currValue,height() - PYP_TOP_SPACE);
     QRectF BarRect(TopLeft,BottomRight);
 
     QLinearGradient BarGradient(uRect.topLeft(),uRect.topRight());
@@ -120,7 +151,6 @@ void PYProg::drawBar(QPainter *painter)
 
         /// increment initX
         initX += dLineX;
-
     }
 
     // draw text
@@ -152,8 +182,8 @@ void PYProg::drawBar(QPainter *painter)
 }
 
 /*!
-  public interfaces
-*/
+ * public interfaces
+ */
 void PYProg::setRange(qreal min, qreal max)
 {
     Q_ASSERT(min < max);
@@ -164,8 +194,22 @@ void PYProg::setRange(qreal min, qreal max)
 
 void PYProg::setValue(qreal value)
 {
-    m_value = value;
-    update();
+    if(!m_isAnimated)
+    {
+        m_value = value;
+        m_currValue = value;
+        update();
+    }
+    else
+    {
+        if(value != m_value)
+        {
+            m_dValue = (qreal)qAbs(value - m_value)/PYP_UPDATE_STEP;
+            m_animationTimer->start();
+            m_isIncreValue = value > m_value;
+            m_value = value;
+        }
+    }
 }
 
 void PYProg::setText(const QString &strText)
@@ -176,4 +220,18 @@ void PYProg::setText(const QString &strText)
 QString PYProg::text() const
 {
     return m_strText;
+}
+
+void PYProg::setAnimated(bool animated)
+{
+    m_isAnimated = animated;
+    if(m_isAnimated)
+    {
+        initAnimationTimer();
+    }
+}
+
+bool PYProg::isAnimated() const
+{
+    return m_isAnimated;
 }

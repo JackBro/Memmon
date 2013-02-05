@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QTimer>
 
 class PYProg : public QWidget
 {
@@ -19,7 +20,11 @@ public:
     void setText(const QString& strText);
     QString text() const;
 
+    void setAnimated(bool animated);
+    bool isAnimated() const;
+
 protected:
+
     void paintEvent(QPaintEvent *);
 
     QSize sizeHint() const
@@ -36,22 +41,29 @@ protected:
 
 
 private:
-    /// painting functions
     void drawBg(QPainter* painter);
-
     void drawBar(QPainter* painter);
-
-
 
 private:
     void initVariables();
+    void initAnimationTimer();
+
+private Q_SLOTS:
+    void slot_updateValue();
 
 private:
     qreal m_min;
     qreal m_max;
     qreal m_value;
+    qreal m_currValue;
+    qreal m_dValue;
 
     QString m_strText;
+
+    bool m_isAnimated;
+    bool m_isIncreValue;
+
+    QTimer* m_animationTimer;
 
 Q_SIGNALS:
     void sig_mousePressed();
