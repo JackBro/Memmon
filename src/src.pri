@@ -29,7 +29,6 @@ SOURCES +=  $$PWD/main.cpp \
             src/mmuiproxy.cpp \
             src/mmvarproxy.cpp \
             src/usageinfopad.cpp \
-            $$PWD/mmtiplabel.cpp
 
 SOURCES += $$PWD/infofetcher/cpuusagefetcher.cpp \
            $$PWD/infofetcher/memoryusagefetcher.cpp \
@@ -68,7 +67,6 @@ HEADERS += \
             src/mmuiproxy.h \
             src/mmvarproxy.h \
             src/usageinfopad.h \
-            $$PWD/mmtiplabel.h
 
 HEADERS += $$PWD/infofetcher/cpuusagefetcher.h \
            $$PWD/infofetcher/memoryusagefetcher.h \

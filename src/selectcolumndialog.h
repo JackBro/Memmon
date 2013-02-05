@@ -10,7 +10,6 @@
 #include <QCheckBox>
 
 #include "queryengine.h"
-#include "mmtiplabel.h"
 #include "QProgressIndicator.h"
 
 
@@ -45,7 +44,7 @@ private:
 private:
 
     QListWidget* _columnList;
-    MmTipLabel* _tipLabel;
+    QLabel* _tipLabel;
     QCheckBox* _selectAllCheck;
     QVBoxLayout* _mainLayout;
     QHBoxLayout* _buttonLayout;

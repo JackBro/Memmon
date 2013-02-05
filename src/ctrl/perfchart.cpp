@@ -2,6 +2,7 @@
 
 #include <QToolTip>
 #include <QColorDialog>
+#include <QFileDialog>
 
 #define PERFCHART_SPACE 3
 #define X_INCREMENT 5
@@ -12,6 +13,7 @@ PerfChart::PerfChart(QWidget *parent) :
 {
     initVariables();
     initSettings();
+    initContextMenu();
 }
 
 void PerfChart::initVariables()
@@ -75,6 +77,12 @@ void PerfChart::mousePressEvent(QMouseEvent *e)
             }
         }
     }
+}
+
+void PerfChart::contextMenuEvent(QContextMenuEvent *e)
+{
+    _menus[Context]->exec(e->globalPos());
+    e->accept();
 }
 
 /*!
@@ -313,9 +321,62 @@ QString PerfChart::getClickedRectTip(QMouseEvent* e)
     return QString();
 }
 
+QMenu* PerfChart::createMenu(Menu menu, const QString &strTitle, const QIcon &icon)
+{
+    QMenu* m = new QMenu(this);
+    m->setTitle(strTitle);
+    m->setIcon(icon);
+    _menus[menu] = m;
+    return m;
+}
+
+QAction* PerfChart::createAction(Action act, const QString &strText, const QIcon &icon)
+{
+    QAction* action = new QAction(this);
+    action->setText(strText);
+    action->setIcon(icon);
+    connect(action,SIGNAL(triggered()),this,SLOT(slot_actionHandler()));
+    _actions[act] = action;
+    return action;
+}
+
+void PerfChart::initContextMenu()
+{
+    _menus[Context] = createMenu(Context,tr("Context"));
+    _actions[Snapshot] = createAction(Snapshot,tr("Snapshot"),QIcon(":/images/snapshot.png"));
+    _menus[Context]->addAction(_actions[Snapshot]);
+}
+
+void PerfChart::takeSnapshot()
+{
+    QString saveImage = QFileDialog::getSaveFileName(this,tr("Save Image ..."),".","PNG Files(*.png)");
+    if(saveImage.isEmpty())
+    {
+        return;
+    }
+
+    QPixmap pixmap = QPixmap::grabWidget(this,0,0,width(),height());
+    pixmap.save(saveImage,"PNG");
+}
+
+/*!
+ * private slots
+ */
+void PerfChart::slot_actionHandler()
+{
+    QAction* who = qobject_cast<QAction*>(sender());
+
+    if(who == _actions[Snapshot])
+    {
+        takeSnapshot();
+    }
+}
+
+/*!
+ * public functions
+ */
 void PerfChart::addChannelData(int index, qreal data)
 {
-
     if(index>=m_nChannelCount)
     {
         return ;

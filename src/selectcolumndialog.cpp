@@ -53,7 +53,7 @@ void SelectColumnDialog::initWidgets()
 {
     _mainLayout = new QVBoxLayout(this);
 
-    _tipLabel = new MmTipLabel(tr("Related columns:"),this);
+    _tipLabel = new QLabel(tr("Related columns:"),this);
     _columnList = new QListWidget(this);
     _columnList->setAlternatingRowColors(true);
     _selectAllCheck = new QCheckBox(tr("Check/Uncheck All"),this);

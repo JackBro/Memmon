@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QAction>
+#include <QMenu>
 
 #include "lineargradient.h"
 #include "colorpicker.h"
@@ -11,6 +13,8 @@
 class PerfChart : public QWidget
 {
     Q_OBJECT
+    enum Menu { Context, Caption, MenuCount};
+    enum Action { Snapshot, ActionCount };
 public:
     explicit PerfChart(QWidget *parent = 0);
 
@@ -119,6 +123,7 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
+    void contextMenuEvent(QContextMenuEvent *);
 
     /*!
       painting used private functions
@@ -135,6 +140,17 @@ private:
     bool mouseInRects(QMouseEvent* e);
     int  getClickedCoreIndex(const QString& strTip);
     QString getClickedRectTip(QMouseEvent* e);
+
+    QMenu* createMenu(Menu menu, const QString& strTitle, const QIcon& icon = QIcon());
+    QAction* createAction(Action act, const QString& strText, const QIcon& icon = QIcon());
+
+    void initContextMenu();
+
+    void takeSnapshot();
+
+private Q_SLOTS:
+    void slot_actionHandler();
+
 private:
 
     int     m_nChannelCount;
@@ -161,6 +177,9 @@ private:
 
     ColorPicker m_cp;
     LinearGradient m_lg;
+
+    QMenu* _menus[MenuCount];
+    QAction* _actions[ActionCount];
 
     bool  m_bUseAntialiasing;
 
