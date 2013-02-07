@@ -7,6 +7,7 @@
 #include "xprocesstable/xprocesstable.h"
 #include "queryengine.h"
 
+class SelectColumnDialog;
 class QueryManager : public QObject
 {
     Q_OBJECT
@@ -14,6 +15,7 @@ public:
     explicit QueryManager(QObject *parent = 0);
     
 public:
+    void setColumnDialog(SelectColumnDialog* pScd);
     void setTable(XProcessTable* table);
     void setUpdateInterval(int ms);
     void setColumns(const QStringList& columns);
@@ -24,15 +26,18 @@ public:
     void clearHistoryData();
     void showPopup(bool show);
 
+    void setQueryEngine(const QString& strQueryEngine);
+    QString queryEngine() const;
+
 private:
     void initVars();
     void getPidColumnIndex(const QString& str);
     void notifyQueryError();
 
-
 private:
 
     QStringList _columns;
+    SelectColumnDialog* _selectColumnDialog;
     XProcessTable* _table;
     QueryEngine* _queryEngine;
     QTimer* _updateTimer;

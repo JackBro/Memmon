@@ -44,6 +44,8 @@ namespace MM
         DECLARE_STRING(ToolBar_Tools,"Tools")
 
         DECLARE_STRING(SelectColumn,"Select Columns")
+        DECLARE_STRING(Win32_Process,"Win32_Process")
+        DECLARE_STRING(Win32_PerfFormattedDataPerfProc_Process,"Win32_PerfFormattedData_PerfProc_Process")
         DECLARE_STRING(UpdateIntervalLabel,"Update Interval:")
 
         DECLARE_STRING(TB_StartQuery,"Start Query")
@@ -83,10 +85,10 @@ namespace MM
         DECLARE_STRING(Action_AboutThis,"About This")
         DECLARE_STRING(Action_Help,"Help")
 
-
         // qmenu
         DECLARE_STRING(Menu_File,"File")
         DECLARE_STRING(Menu_Config,"Configurations")
+        DECLARE_STRING(Menu_SwitchQueryEngine,"Switch Query Engine")
         DECLARE_STRING(Menu_Window,"Window")
         DECLARE_STRING(Menu_About,"About")
 
@@ -105,7 +107,9 @@ namespace MM
         DECLARE_STRING(Info_AppName,"Memmon")
         DECLARE_STRING(Info_CorpName,"Doit Inc.")
 
-
+        // registry keys
+        DECLARE_STRING(Key_WindowStates,"WindowStates")
+        DECLARE_STRING(Key_QueryEngine,"QueryEngine")
     }
 
     namespace Constant

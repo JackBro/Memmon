@@ -39,7 +39,6 @@ private:
     void createWidgets();
     void initVars();
     void initSettings();
-    void saveSettings();
     void initMenus();
     void initToolbars();
     void initUsageFetcher();
@@ -69,6 +68,9 @@ private:
     void addToInfoPad(int categoryIndex, const QByteArray& output);
     void showUsageInfoPad();
     void stopInfoFetcher(QThread* fetcher);
+
+    void saveSettings();
+    void restoreSettings();
 private:
     XProcessTable* _processTable;
 
@@ -109,6 +111,7 @@ private Q_SLOTS:
     void slot_showGeneralInfo();
     void slot_addUsageWidgets();
     void slot_safeQuit();
+    void slot_switchQueryEngine();
     friend class MmUiProxy;
 
 };

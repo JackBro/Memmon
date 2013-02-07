@@ -1,5 +1,6 @@
 #include "memmon.h"
 #include "mmdef.h"
+#include "util.h"
 
 #include <QSettings>
 #include <QAction>
@@ -44,6 +45,7 @@ Memmon::Memmon(QWidget *parent) :
     setupStatusbar();
     initUsageFetcher();
     initConnections();
+    restoreSettings();
 }
 
 void Memmon::createWidgets()
@@ -89,12 +91,6 @@ void Memmon::initSettings()
 
 }
 
-void Memmon::saveSettings()
-{
-    QByteArray states = saveState();
-
-}
-
 void Memmon::initMenus()
 {
 
@@ -106,6 +102,14 @@ void Memmon::initMenus()
 
     /// add config menu
     USE_WIDGET(Menu,Config)->addAction(USE_WIDGET(Action,SelectColumns));
+    USE_WIDGET(Menu,Config)->addMenu(USE_WIDGET(Menu,QueryEngine));
+
+    QActionGroup* queryEngineActGroup = new QActionGroup(this);
+    queryEngineActGroup->addAction(USE_WIDGET(Action,Win32_Process));
+    queryEngineActGroup->addAction(USE_WIDGET(Action,Win32_PerfFormattedData_PerfProc_Process));
+
+    USE_WIDGET(Menu,QueryEngine)->addAction(USE_WIDGET(Action,Win32_Process));
+    USE_WIDGET(Menu,QueryEngine)->addAction(USE_WIDGET(Action,Win32_PerfFormattedData_PerfProc_Process));
 
     menuBar()->addMenu(USE_WIDGET(Menu,Config));
 
@@ -186,6 +190,8 @@ void Memmon::initConnections()
 
     connect(((QToolButton*)USE_WIDGET(ToolButton,GeneralInfo)),SIGNAL(clicked()),this,SLOT(slot_showGeneralInfo()));
 
+    connect(USE_WIDGET(Action,Win32_Process),SIGNAL(triggered()),this,SLOT(slot_switchQueryEngine()));
+    connect(USE_WIDGET(Action,Win32_PerfFormattedData_PerfProc_Process),SIGNAL(triggered()),this,SLOT(slot_switchQueryEngine()));
 }
 
 void Memmon::initLateInitVars()
@@ -222,6 +228,8 @@ void Memmon::showSelectColumnDialog()
     if(_selectColumnDialog == 0)
     {
         _selectColumnDialog = new SelectColumnDialog(this);
+        _queryManager->setColumnDialog(_selectColumnDialog);
+        _selectColumnDialog->setAction(USE_WIDGET(Action,SelectColumns));
         connect(_selectColumnDialog,SIGNAL(sig_setColumns(QStringList)),this,SLOT(slot_setColumns(QStringList)));
     }
     _selectColumnDialog->show();
@@ -436,6 +444,26 @@ void Memmon::stopInfoFetcher(QThread *fetcher)
     {
         fetcher->terminate();
         fetcher->deleteLater();
+    }
+}
+
+void Memmon::saveSettings()
+{
+    QByteArray windowSettings = saveState();
+    Util::SettingMgr::WriteSetting2ByteA(MM::Text::Key_WindowStates,windowSettings);
+
+    Util::SettingMgr::WriteSetting(MM::Text::Key_QueryEngine,_queryManager->queryEngine());
+}
+
+void Memmon::restoreSettings()
+{
+    restoreState(Util::SettingMgr::ReadSetting2ByteA(MM::Text::Key_WindowStates));
+
+    QString strQueryEngine = Util::SettingMgr::ReadSetting(MM::Text::Key_QueryEngine);
+    if(strQueryEngine.isEmpty())
+    {
+        USE_WIDGET(Action,Win32_Process)->setChecked(true);
+        _queryManager->setQueryEngine(USE_WIDGET(Action,Win32_Process)->text());
     }
 }
 
@@ -677,6 +705,7 @@ void Memmon::slot_addUsageWidgets()
 
 void Memmon::slot_safeQuit()
 {
+    saveSettings();
     stopInfoFetcher(_cpuUsageFetcher);
     stopInfoFetcher(_memUsageFetcher);
     stopInfoFetcher(_processCountFetcher);
@@ -684,4 +713,19 @@ void Memmon::slot_safeQuit()
     stopInfoFetcher(_driverCountFetcher);
     stopInfoFetcher(_coreUsageFetcher);
     qApp->exit(0);
+}
+
+void Memmon::slot_switchQueryEngine()
+{
+    QAction* who = qobject_cast<QAction*>(sender());
+    QString strQueryEngine = who->text();
+
+    if(_queryManager->queryEngine() != strQueryEngine)
+    {
+        _queryManager->setQueryEngine(strQueryEngine);
+
+        showSelectColumnDialog();
+        _selectColumnDialog->setQueryEngine(strQueryEngine);
+        _selectColumnDialog->reload();
+    }
 }

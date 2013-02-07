@@ -8,7 +8,8 @@ HEADERS +=  progressbar.h \
             colorpicker.h \
             pyinfopad.h \
             lineargradient.h \
-            perfchart.h
+            perfchart.h \
+            llnotifywidget.h
 
 SOURCES +=  progressbar.cpp \
             pyprog.cpp \
@@ -17,7 +18,8 @@ SOURCES +=  progressbar.cpp \
             colorpicker.cpp \
             pyinfopad.cpp \
             lineargradient.cpp \
-            perfchart.cpp
+            perfchart.cpp \
+            llnotifywidget.cpp
 
 
 

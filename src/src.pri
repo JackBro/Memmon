@@ -67,6 +67,7 @@ HEADERS += \
             src/mmuiproxy.h \
             src/mmvarproxy.h \
             src/usageinfopad.h \
+            $$PWD/util.h
 
 HEADERS += $$PWD/infofetcher/cpuusagefetcher.h \
            $$PWD/infofetcher/memoryusagefetcher.h \

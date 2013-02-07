@@ -16,7 +16,7 @@ QStringList ItemWidgetFactory::ProgressList = QStringList() << "PercentProcessor
 
 QStringList ItemWidgetFactory::BytesList = QStringList() << "MaximumWorkingSetSize" << "MaximumWorkingSetSize"
                                                          << "PeakVirtualSize" << "PeakWorkingSetSize" << "VirtualSize"
-                                                         << "WorkingSetSize" ;
+                                                         << "WorkingSetSize" << "MinimumWorkingSetSize";
 QStringList ItemWidgetFactory::PathList = QStringList() << "ExecutablePath";
 
 

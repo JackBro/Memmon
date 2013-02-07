@@ -86,6 +86,7 @@ public:
     {
         Menu_File,
         Menu_Config,
+        Menu_QueryEngine,
         Menu_Window,
         Menu_About
     };
@@ -95,6 +96,8 @@ public:
         Action_Export,
         Action_Exit,
         Action_SelectColumns,
+        Action_Win32_Process,
+        Action_Win32_PerfFormattedData_PerfProc_Process,
         Action_MemUtil,
         Action_LogDock,
         Action_WmiQuery,
@@ -156,6 +159,8 @@ private:
     void initToolBars();
     void initComboBoxes();
     void initToolButtons();
+
+    inline void makeActionCheckable(Action act);
 
     // utility function for constructing qaction
     DECLARE_CREATE_WIDGET_FUNC(Menu,(const QString& strTitle, const QIcon& icon = QIcon()))

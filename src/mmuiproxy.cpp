@@ -10,7 +10,6 @@ MmUiProxy::MmUiProxy(Memmon *parent) :
     initToolBars();
     initComboBoxes();
     initToolButtons();
-
 }
 
 void MmUiProxy::initWidgets()
@@ -30,7 +29,6 @@ void MmUiProxy::initWidgets()
 
     PYHistory* memHistory = new PYHistory((QWidget*)_parent);
     ADD_WIDGET(Widget,Widget_MemUsageHistory,memHistory)
-
 }
 
 void MmUiProxy::initLabels()
@@ -47,17 +45,24 @@ void MmUiProxy::initActions()
     ADD_WIDGET(Action,Action_Export,createAction(MM::Text::Action_Export,QIcon(MM::Icon::ExportImage)));
     ADD_WIDGET(Action,Action_Exit,createAction(MM::Text::Action_Exit,QIcon(MM::Icon::Close)));
     ADD_WIDGET(Action,Action_SelectColumns,createAction(MM::Text::SelectColumn,QIcon(MM::Icon::SelectColumn)));
+    ADD_WIDGET(Action,Action_Win32_Process,createAction(MM::Text::Win32_Process));
+    ADD_WIDGET(Action,Action_Win32_PerfFormattedData_PerfProc_Process,createAction(MM::Text::Win32_PerfFormattedDataPerfProc_Process));
     ADD_WIDGET(Action,Action_MemUtil,createAction(MM::Text::Action_MemoryUtility));
     ADD_WIDGET(Action,Action_LogDock,createAction(MM::Text::Action_QueryLog));
     ADD_WIDGET(Action,Action_WmiQuery,createAction(MM::Text::Action_WmiQuery));
     ADD_WIDGET(Action,Action_Help,createAction(MM::Text::Action_Help));
     ADD_WIDGET(Action,Action_AboutThis,createAction(MM::Text::Action_AboutThis));
+
+    makeActionCheckable(Action_SelectColumns);
+    makeActionCheckable(Action_Win32_Process);
+    makeActionCheckable(Action_Win32_PerfFormattedData_PerfProc_Process);
 }
 
 void MmUiProxy::initMenus()
 {
     ADD_WIDGET(Menu,Menu_File,createMenu(MM::Text::Menu_File))
     ADD_WIDGET(Menu,Menu_Config,createMenu(MM::Text::Menu_Config))
+    ADD_WIDGET(Menu,Menu_QueryEngine,createMenu(MM::Text::Menu_SwitchQueryEngine))
     ADD_WIDGET(Menu,Menu_Window,createMenu(MM::Text::Menu_Window))
     ADD_WIDGET(Menu,Menu_About,createMenu(MM::Text::Menu_About))
 }
@@ -81,6 +86,10 @@ void MmUiProxy::initToolButtons()
     ADD_WIDGET(ToolButton,ToolButton_GeneralInfo,createToolButton(MM::Text::TB_GeneralInfo,QIcon(MM::Icon::GeneralInfo)))
 }
 
+void MmUiProxy::makeActionCheckable(Action act)
+{
+    getAction(act)->setCheckable(true);
+}
 
 QMenu* MmUiProxy::createMenu(const QString &strTitle, const QIcon& icon)
 {
@@ -105,7 +114,6 @@ QAction* MmUiProxy::createAction(const QString &strText,const QIcon &icon, const
     act->setShortcut(strShortcut);
     act->setCheckable(checkable);
     connect(act,SIGNAL(triggered()),(QWidget*)_parent,SLOT(slot_actionHandler()));
-
     return act;
 }
 
@@ -115,7 +123,6 @@ QAction* MmUiProxy::createAction(const QString &strText, bool checkable)
     act->setText(strText);
     act->setCheckable(checkable);
     connect(act,SIGNAL(triggered()),(QWidget*)_parent,SLOT(slot_actionHandler()));
-
     return act;
 }
 

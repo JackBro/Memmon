@@ -178,3 +178,13 @@ QString QueryEngine::getClass() const
 {
     return _class;
 }
+
+void QueryEngine::setQueryEngine(const QString &strQueryEngine)
+{
+    _class = strQueryEngine;
+}
+
+QString QueryEngine::queryEngine() const
+{
+    return _class;
+}

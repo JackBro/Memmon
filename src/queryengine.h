@@ -25,6 +25,9 @@ public:
     void setClass(const QString& Class);
     QString getClass() const;
 
+    void setQueryEngine(const QString& strQueryEngine);
+    QString queryEngine() const;
+
 
 private:
     void queryColumns();

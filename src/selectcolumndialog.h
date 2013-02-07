@@ -9,17 +9,23 @@
 #include <QLabel>
 #include <QCheckBox>
 
+#include "ctrl/llnotifywidget.h"
 #include "queryengine.h"
 #include "QProgressIndicator.h"
 
 
-class SelectColumnDialog : public QDialog
+class SelectColumnDialog : public LLNotifyWidget
 {
     Q_OBJECT
 public:
     explicit SelectColumnDialog(QWidget *parent = 0);
     
-    
+    void fire_setColumns();
+
+    void reload();
+
+    void setQueryEngine(const QString& strQueryEngine);
+    QString queryEngine() const;
 
 protected:
     QSize sizeHint() const
@@ -56,7 +62,7 @@ private:
     QStringList _columns;
     QStringList _columnsCopy;
 
-
+    QString _strQueryEngine;
 
 private Q_SLOTS:
     void slot_buttonHandler();

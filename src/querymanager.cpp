@@ -2,6 +2,7 @@
 #include "logutil.h"
 #include "mmdef.h"
 #include "xprocesstable/datachart.h"
+#include "selectcolumndialog.h"
 
 #include <QMessageBox>
 
@@ -16,6 +17,7 @@ QueryManager::QueryManager(QObject *parent) :
 ///
 void QueryManager::initVars()
 {
+    _selectColumnDialog = 0;
     _queryEngine = QueryEngine::getInstance();
     connect(_queryEngine,SIGNAL(queryResultReady(QByteArray)),this,SLOT(slot_queryResultReady(QByteArray)));
 
@@ -37,7 +39,6 @@ void QueryManager::initVars()
 
 void QueryManager::getPidColumnIndex(const QString &str)
 {
-    LOG_VAR(str);
     QStringList colList = str.split(MM::Constant::ColumnSeparator);
 
     if(colList.size() > 0 && !colList.at(0).contains("node",Qt::CaseInsensitive))
@@ -72,9 +73,13 @@ void QueryManager::getPidColumnIndex(const QString &str)
 
 void QueryManager::notifyQueryError()
 {
-    QMessageBox::warning(0,"Error","Query error:invalid query,\nplease reset the query columns!");
-    _updateTimer->stop();
-    emit sig_queryStopped();
+//    QMessageBox::warning(0,"Error","Query error:invalid query,\nplease reset the query columns!");
+//    _updateTimer->stop();
+//    emit sig_queryStopped();
+    if(_selectColumnDialog)
+    {
+        _selectColumnDialog->fire_setColumns();
+    }
 }
 
 ///
@@ -86,6 +91,11 @@ void QueryManager::setTable(XProcessTable *table)
 //    connect(_table,SIGNAL(sig_removeProcess(uint32_t)),this,SLOT(slot_removeProcess(uint32_t)));
     _table->setColumns(_columns);
     _table->setAutoAdjust(true);
+}
+
+void QueryManager::setColumnDialog(SelectColumnDialog *pScd)
+{
+    _selectColumnDialog = pScd;
 }
 
 void QueryManager::setUpdateInterval(int ms)
@@ -160,6 +170,16 @@ void QueryManager::showPopup(bool show)
     }
 }
 
+void QueryManager::setQueryEngine(const QString &strQueryEngine)
+{
+    _queryEngine->setQueryEngine(strQueryEngine);
+}
+
+QString QueryManager::queryEngine() const
+{
+    return _queryEngine->queryEngine();
+}
+
 ///
 /// PRIVATE SLOT FUNCTIONS
 ///
@@ -167,7 +187,7 @@ void QueryManager::slot_doQuery()
 {
 
     QStringList arguments;
-    arguments << "PATH" << MM::Constant::ProcessPerfClass <<  "GET";
+    arguments << "PATH" << _queryEngine->queryEngine() <<  "GET";
 
     for(int i = 0;i < _columns.size();i++)
     {
@@ -182,9 +202,6 @@ void QueryManager::slot_doQuery()
     }
 
     arguments << MM::Constant::OutputForamt;
-
-    LOG_VAR(arguments);
-
     _queryEngine->startQuery(arguments);
 }
 
@@ -206,7 +223,6 @@ void QueryManager::slot_queryResultReady(const QByteArray &results)
     if(resultList.size() > 2)
     {
         QString firstLine = resultList.at(1);
-        LOG_VAR(firstLine);
         if(!firstLine.contains("node",Qt::CaseInsensitive))
         {
             int i = 0;
@@ -214,10 +230,7 @@ void QueryManager::slot_queryResultReady(const QByteArray &results)
         getPidColumnIndex(firstLine);
     }
 
-    //
-    LOG_VAR(_columns);
     _table->sortByColumns(_columns);
-
 
     if(_pidColumnIndex != -1)
     {
@@ -226,7 +239,6 @@ void QueryManager::slot_queryResultReady(const QByteArray &results)
             QString strLineResult = resultList.at(i);
             QStringList innerResultList = strLineResult.split(MM::Constant::ColumnSeparator);
             innerResultList.pop_front();
-            LOG_VAR(innerResultList);
 
             if(innerResultList.isEmpty())
             {

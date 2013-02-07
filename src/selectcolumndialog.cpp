@@ -5,7 +5,7 @@
 #include "logutil.h"
 
 SelectColumnDialog::SelectColumnDialog(QWidget *parent) :
-    QDialog(parent)
+    LLNotifyWidget(parent)
 {
     initVars();
     initWidgets();
@@ -31,7 +31,8 @@ void SelectColumnDialog::loadColumns()
 
     QueryEngine* engine = QueryEngine::getInstance();
     connect(engine,SIGNAL(getColumns(QStringList)),this,SLOT(slot_getColumns(QStringList)));
-    engine->startQueryColumns(MM::Constant::ProcessPerfClass);
+    engine->setClass(_strQueryEngine);
+    engine->startQueryColumns(_strQueryEngine);
 }
 
 void SelectColumnDialog::initVars()
@@ -58,7 +59,6 @@ void SelectColumnDialog::initWidgets()
     _columnList->setAlternatingRowColors(true);
     _selectAllCheck = new QCheckBox(tr("Check/Uncheck All"),this);
 
-
     _buttonLayout = new QHBoxLayout;
     _indicator = new QProgressIndicator(this);
     _indicator->startAnimation();
@@ -82,7 +82,8 @@ void SelectColumnDialog::initWidgets()
 void SelectColumnDialog::initSettings()
 {
     setWindowTitle(MM::Text::SelectColumn);
-    setModal(true);
+    setWindowFlags(Qt::Tool);
+    setWindowModality(Qt::ApplicationModal);
 }
 
 void SelectColumnDialog::initConnections()
@@ -177,8 +178,7 @@ void SelectColumnDialog::slot_buttonHandler()
 
     if(who == _okButton)
     {
-        getSelectedColumns();
-        emit sig_setColumns(_columns);
+        fire_setColumns();
         assignToCopy();
     }
 
@@ -194,10 +194,10 @@ void SelectColumnDialog::slot_buttonHandler()
 void SelectColumnDialog::slot_getColumns(const QStringList &columns)
 {
     // if already loaded then returns
-    if(_columnList->count() != 0)
-    {
-        return ;
-    }
+//    if(_columnList->count() != 0)
+//    {
+//        return ;
+//    }
 
     _indicator->hide();
     _statusLabel->setText(QString());
@@ -218,8 +218,6 @@ void SelectColumnDialog::slot_getColumns(const QStringList &columns)
         }
 
         _columnList->addItem(colItem);
-
-
     }
 }
 
@@ -266,4 +264,28 @@ void SelectColumnDialog::slot_checkHandler(int state)
     {
         checkAllItems(state);
     }
+}
+
+/*!
+ * public functions
+ */
+void SelectColumnDialog::fire_setColumns()
+{
+    getSelectedColumns();
+    emit sig_setColumns(_columns);
+}
+
+void SelectColumnDialog::reload()
+{
+    loadColumns();
+}
+
+void SelectColumnDialog::setQueryEngine(const QString &strQueryEngine)
+{
+    _strQueryEngine = strQueryEngine;
+}
+
+QString SelectColumnDialog::queryEngine() const
+{
+    return _strQueryEngine;
 }
