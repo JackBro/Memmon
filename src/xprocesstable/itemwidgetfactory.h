@@ -11,7 +11,7 @@
 
 enum WidgetType
 {
-    Text,Bytes,Progress,Path,Icon,Time
+    Text,Bytes,Progress,Path,Icon,Time,Number
 };
 
 static const int DefaultDataCount = 10;
@@ -191,6 +191,22 @@ private:
     QString _value;
 };
 
+class NumberDisplayWidget : public BaseDisplayWidget
+{
+    Q_OBJECT
+public:
+    explicit NumberDisplayWidget(QWidget* parent = 0);
+
+public:
+    void setValue(const QString &value);
+    QString value() const;
+    WidgetType widgetType() const;
+    QString text() const;
+
+private:
+    QLabel* _label;
+};
+
 class ItemWidgetFactory
 {
 private:
@@ -207,6 +223,7 @@ private:
     static QStringList PathList;
     static QStringList IconList;
     static QStringList TimeList;
+    static QStringList NumberList;
 
 };
 

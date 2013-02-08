@@ -27,7 +27,12 @@ QStringList ItemWidgetFactory::PathList = QStringList() << "ExecutablePath";
 
 QStringList ItemWidgetFactory::IconList = QStringList() << "Name";
 
-QStringList ItemWidgetFactory::TimeList = QStringList() << "ElapsedTime";
+QStringList ItemWidgetFactory::TimeList = QStringList() << "ElapsedTime" << "KernelModeTime" << "UserModeTime";
+
+QStringList ItemWidgetFactory::NumberList = QStringList() << "HandleCount" << "ThreadCount" << "OtherOperationCount"
+                                                          << "OtherTransferCount" << "PrivatePageCount" << "ReadOperationCount"
+                                                          << "ReadTransferCount" << "WriteOperationCount" << "WriteTransferCount"
+                                                          << "PageFaults";
 
 ItemWidgetFactory::ItemWidgetFactory()
 {
@@ -64,6 +69,11 @@ BaseDisplayWidget* ItemWidgetFactory::makeWidget(WidgetType type, QWidget *paren
             TimeDisplayWidget* timeWidget = new TimeDisplayWidget(parent);
             return timeWidget;
         }
+        case Number:
+        {
+            NumberDisplayWidget* numberWidget = new NumberDisplayWidget(parent);
+            return numberWidget;
+        }
     }
 }
 
@@ -88,6 +98,10 @@ BaseDisplayWidget* ItemWidgetFactory::makeWidgetByName(const QString &strColumnN
     else if(TimeList.contains(strColumnName,Qt::CaseInsensitive))
     {
         return new TimeDisplayWidget(parent);
+    }
+    else if(NumberList.contains(strColumnName,Qt::CaseInsensitive))
+    {
+        return new NumberDisplayWidget(parent);
     }
     else
     {
@@ -481,3 +495,41 @@ void TimeDisplayWidget::displayTime()
     QString strTime = convertedTime.toString("hh:mm:ss.zzz");
     _lcd->display(strTime);
 }
+
+/***********************************************/
+/*! NumberDisplayWidget                        */
+/***********************************************/
+NumberDisplayWidget::NumberDisplayWidget(QWidget *parent):BaseDisplayWidget(parent)
+{
+    _label = new QLabel(this);
+
+    QVBoxLayout* layout = new QVBoxLayout;
+    layout->setContentsMargins(0,0,0,0);
+    layout->addWidget(_label);
+    setLayout(layout);
+}
+
+void NumberDisplayWidget::setValue(const QString &value)
+{
+    int number = value.toInt();
+    QString strNum;
+    strNum = tr("%L1").arg(number);
+    _label->setText(strNum);
+}
+
+QString NumberDisplayWidget::value() const
+{
+    return _label->text();
+}
+
+WidgetType NumberDisplayWidget::widgetType() const
+{
+    return Number;
+}
+
+QString NumberDisplayWidget::text() const
+{
+    return _label->text();
+}
+
+
