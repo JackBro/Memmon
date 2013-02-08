@@ -14,5 +14,7 @@
         <file>images/export_image.png</file>
         <file>images/info.png</file>
         <file>images/select_column.png</file>
+        <file>images/config.png</file>
+        <file>images/snapshot.png</file>
     </qresource>
 </RCC>

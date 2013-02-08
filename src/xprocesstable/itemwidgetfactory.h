@@ -4,12 +4,14 @@
 #include <QLabel>
 #include <QObject>
 #include <QToolButton>
+#include <QLCDNumber>
 
 #include "../ctrl/progressbar.h"
+#include "../ctrl/pyprog.h"
 
 enum WidgetType
 {
-    Text,Bytes,Progress,Path,Icon
+    Text,Bytes,Progress,Path,Icon,Time
 };
 
 static const int DefaultDataCount = 10;
@@ -111,7 +113,7 @@ public:
     QString text() const;
 
 private:
-    ProgressBar* _pgsBar;
+    PYProg* _pgsBar;
 
 };
 
@@ -168,7 +170,25 @@ private:
 
 private Q_SLOTS:
     void slot_showPath();
+};
 
+class TimeDisplayWidget : public BaseDisplayWidget
+{
+    Q_OBJECT
+public:
+    explicit TimeDisplayWidget(QWidget* parent = 0);
+
+public:
+    void setValue(const QString &value);
+    QString value() const;
+    WidgetType widgetType() const;
+    QString text() const;
+
+private:
+    void displayTime();
+
+    QLCDNumber* _lcd;
+    QString _value;
 };
 
 class ItemWidgetFactory
@@ -186,6 +206,7 @@ private:
     static QStringList ProgressList;
     static QStringList PathList;
     static QStringList IconList;
+    static QStringList TimeList;
 
 };
 

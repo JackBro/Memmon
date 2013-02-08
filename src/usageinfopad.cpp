@@ -5,7 +5,7 @@
 static const int kMargin = 0;
 
 UsageInfoPad::UsageInfoPad(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),_quitButton(NULL)
 {
     setupLayout();
     initSettings();
@@ -81,6 +81,11 @@ void UsageInfoPad::addCoreUsage(int index, int usage)
 
 void UsageInfoPad::done()
 {
+    if(_quitButton != NULL)
+    {
+        return;
+    }
+
     initVars();
     QHBoxLayout* buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch();

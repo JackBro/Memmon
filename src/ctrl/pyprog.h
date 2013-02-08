@@ -16,6 +16,7 @@ public:
     void setRange(qreal min,qreal max);
 
     void setValue(qreal value);
+    qreal value() const;
 
     void setText(const QString& strText);
     QString text() const;
@@ -29,7 +30,7 @@ protected:
 
     QSize sizeHint() const
     {
-        return QSize(200,20);
+        return QSize(120,20);
     }
 
     QSize minimumSizeHint() const

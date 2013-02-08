@@ -87,6 +87,7 @@ public:
         Menu_File,
         Menu_Config,
         Menu_QueryEngine,
+        Menu_Tools,
         Menu_Window,
         Menu_About
     };
@@ -98,6 +99,7 @@ public:
         Action_SelectColumns,
         Action_Win32_Process,
         Action_Win32_PerfFormattedData_PerfProc_Process,
+        Action_TakeSnapshot,
         Action_MemUtil,
         Action_LogDock,
         Action_WmiQuery,

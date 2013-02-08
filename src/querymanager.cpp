@@ -58,7 +58,7 @@ void QueryManager::getPidColumnIndex(const QString &str)
     for(int i = 0;i < colList.size();i++)
     {
         _columns.push_back(colList.at(i).trimmed());
-        if(colList.at(i).trimmed().contains(MM::Constant::IDProcess,Qt::CaseInsensitive))
+        if(colList.at(i).trimmed().contains(_pidColumnName,Qt::CaseInsensitive))
         {
             _pidColumnIndex = i;
         }
@@ -80,6 +80,23 @@ void QueryManager::notifyQueryError()
     {
         _selectColumnDialog->fire_setColumns();
     }
+}
+void QueryManager::notifyPidColumnNameChanged(const QString& strQueryEngine)
+{
+    if(strQueryEngine.toLower() == "win32_process")
+    {
+        _pidColumnName = "ProcessID";
+    }
+    else
+    {
+        _pidColumnName = "IDProcess";
+    }
+}
+
+void QueryManager::stopQuery()
+{
+    _updateTimer->stop();
+    emit sig_queryStopped();
 }
 
 ///
@@ -172,7 +189,12 @@ void QueryManager::showPopup(bool show)
 
 void QueryManager::setQueryEngine(const QString &strQueryEngine)
 {
-    _queryEngine->setQueryEngine(strQueryEngine);
+    if(_queryEngine->queryEngine() != strQueryEngine)
+    {
+        _queryEngine->setQueryEngine(strQueryEngine);
+        notifyPidColumnNameChanged(strQueryEngine);
+        stopQuery();
+    }
 }
 
 QString QueryManager::queryEngine() const

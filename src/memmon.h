@@ -112,6 +112,8 @@ private Q_SLOTS:
     void slot_addUsageWidgets();
     void slot_safeQuit();
     void slot_switchQueryEngine();
+    void slot_takeSnapshot();
+
     friend class MmUiProxy;
 
 };

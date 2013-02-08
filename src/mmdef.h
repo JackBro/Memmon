@@ -84,11 +84,13 @@ namespace MM
         DECLARE_STRING(Action_QueryLog,"Query Log")
         DECLARE_STRING(Action_AboutThis,"About This")
         DECLARE_STRING(Action_Help,"Help")
+        DECLARE_STRING(Action_TakeSnapshot,"Snapshot")
 
         // qmenu
         DECLARE_STRING(Menu_File,"File")
         DECLARE_STRING(Menu_Config,"Configurations")
         DECLARE_STRING(Menu_SwitchQueryEngine,"Switch Query Engine")
+        DECLARE_STRING(Menu_Tools,"Tools")
         DECLARE_STRING(Menu_Window,"Window")
         DECLARE_STRING(Menu_About,"About")
 
@@ -128,7 +130,7 @@ namespace MM
         const QString TopSeparator = "==";
         const QStringList DefaultColumns = QStringList() << "Name" << "ProcessId" << "ThreadCount" << "ParentProcessID"
                                                          << "WorkingSetSize" << "ExecutablePath";
-        const QStringList MustHaveColums = QStringList() << "Name" << "ProcessId";
+        const QStringList MustHaveColums = QStringList() << "Name" << "ProcessId" << "IDProcess";
         const QStringList MonitorColumns = QStringList() << "HandleCount" << "OtherTransferCount" << "OtherOperationCount"
                                                          << "PageFaults" << "PageFileUsage" << "PeakPageFileUsage"
                                                          << "PeakVirtualSize" << "PeakWorkingSetSize" << "PrivatePageCount"
@@ -151,6 +153,7 @@ namespace MM
         DECLARE_STRING(GeneralInfo,":/images/info.png")
         DECLARE_STRING(ExportImage,":/images/export_image.png")
         DECLARE_STRING(SelectColumn,":/images/select_column.png")
+        DECLARE_STRING(Snapshot,":/images/snapshot.png")
     }
 
 }

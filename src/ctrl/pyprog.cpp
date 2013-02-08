@@ -212,6 +212,11 @@ void PYProg::setValue(qreal value)
     }
 }
 
+qreal PYProg::value() const
+{
+    return m_value;
+}
+
 void PYProg::setText(const QString &strText)
 {
     m_strText = strText;

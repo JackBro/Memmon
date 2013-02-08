@@ -1,13 +1,15 @@
 #include "itemwidgetfactory.h"
+#include "datachart.h"
 #include "../mmutil.h"
 #include "../mmdef.h"
-#include "datachart.h"
 #include "../util.h"
 
 #include <QVBoxLayout>
 #include <QProcess>
 #include <QFile>
 #include <QToolTip>
+#include <QMessageBox>
+#include <QTime>
 
 QStringList ItemWidgetFactory::TextList = QStringList() << "Caption" << "ParentProcessId"
                                                         << "ElapsedTime" << "HandleCount"
@@ -16,11 +18,16 @@ QStringList ItemWidgetFactory::ProgressList = QStringList() << "PercentProcessor
 
 QStringList ItemWidgetFactory::BytesList = QStringList() << "MaximumWorkingSetSize" << "MaximumWorkingSetSize"
                                                          << "PeakVirtualSize" << "PeakWorkingSetSize" << "VirtualSize"
-                                                         << "WorkingSetSize" << "MinimumWorkingSetSize";
+                                                         << "WorkingSetSize" << "MinimumWorkingSetSize" << "WorkingSet"
+                                                         << "VirtualBytes" << "VirtualBytesPeak" << "WorkingSetPeak"
+                                                         << "WorkingSetPrivate";
+
 QStringList ItemWidgetFactory::PathList = QStringList() << "ExecutablePath";
 
 
 QStringList ItemWidgetFactory::IconList = QStringList() << "Name";
+
+QStringList ItemWidgetFactory::TimeList = QStringList() << "ElapsedTime";
 
 ItemWidgetFactory::ItemWidgetFactory()
 {
@@ -52,6 +59,11 @@ BaseDisplayWidget* ItemWidgetFactory::makeWidget(WidgetType type, QWidget *paren
             IconDisplayWidget* iconWidget = new IconDisplayWidget(parent);
             return iconWidget;
         }
+        case Time:
+        {
+            TimeDisplayWidget* timeWidget = new TimeDisplayWidget(parent);
+            return timeWidget;
+        }
     }
 }
 
@@ -72,6 +84,10 @@ BaseDisplayWidget* ItemWidgetFactory::makeWidgetByName(const QString &strColumnN
     else if(IconList.contains(strColumnName,Qt::CaseInsensitive))
     {
         return new IconDisplayWidget(parent);
+    }
+    else if(TimeList.contains(strColumnName,Qt::CaseInsensitive))
+    {
+        return new TimeDisplayWidget(parent);
     }
     else
     {
@@ -215,7 +231,8 @@ QString IconDisplayWidget::text() const
 /***********************************************/
 ProgressDisplayWidget::ProgressDisplayWidget(QWidget *parent):BaseDisplayWidget(parent)
 {
-    _pgsBar = new ProgressBar(this);
+    _pgsBar = new PYProg(this);
+    _pgsBar->setAnimated(true);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0,0,0,0);
@@ -237,7 +254,9 @@ void ProgressDisplayWidget::setValue(const QString& strValue)
 
 QString ProgressDisplayWidget::value() const
 {
-    return QString(_pgsBar->value());
+    QString strValue;
+    strValue = tr("%1").arg(_pgsBar->value());
+    return strValue;
 }
 
 WidgetType ProgressDisplayWidget::widgetType() const
@@ -403,7 +422,6 @@ QString PathDisplayWidget::text() const
     return _button->text();
 }
 
-#include <QMessageBox>
 void PathDisplayWidget::slot_showPath()
 {
     QString path(_button->text());
@@ -413,4 +431,53 @@ void PathDisplayWidget::slot_showPath()
         return;
     }
     Util::Shell::LocateFile(path);
+}
+
+/***********************************************/
+/*! TimeDisplayWidget                         */
+/***********************************************/
+TimeDisplayWidget::TimeDisplayWidget(QWidget *parent):BaseDisplayWidget(parent)
+{
+    _lcd = new QLCDNumber(this);
+    _lcd->setFrameShape(QFrame::NoFrame);
+    _lcd->setSegmentStyle(QLCDNumber::Filled);
+    _lcd->setStyleSheet("color:black;");
+
+    QString strTimeFormat("hh:mm:ss.zzz");
+    _lcd->setDigitCount(strTimeFormat.length());
+
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(_lcd);
+    mainLayout->setContentsMargins(0,0,0,0);
+    setLayout(mainLayout);
+}
+
+void TimeDisplayWidget::setValue(const QString &value)
+{
+    _value = value;
+    displayTime();
+}
+
+QString TimeDisplayWidget::value() const
+{
+    return _value;
+}
+
+WidgetType TimeDisplayWidget::widgetType() const
+{
+    return Time;
+}
+
+QString TimeDisplayWidget::text() const
+{
+    return _value;
+}
+
+void TimeDisplayWidget::displayTime()
+{
+    int msecs = _value.toInt();
+    QTime time;
+    QTime convertedTime = time.addMSecs(msecs);
+    QString strTime = convertedTime.toString("hh:mm:ss.zzz");
+    _lcd->display(strTime);
 }

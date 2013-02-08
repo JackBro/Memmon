@@ -33,7 +33,8 @@ private:
     void initVars();
     void getPidColumnIndex(const QString& str);
     void notifyQueryError();
-
+    void notifyPidColumnNameChanged(const QString& strQueryEngin);
+    void stopQuery();
 private:
 
     QStringList _columns;
@@ -50,6 +51,8 @@ private:
     QVector<uint32_t> _pids;
     QVector<uint32_t> _deadPids;
     bool _firstRun;
+
+    QString _pidColumnName;
 
 private Q_SLOTS:
     void slot_doQuery();

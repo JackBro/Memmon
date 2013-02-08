@@ -52,6 +52,7 @@ void MmUiProxy::initActions()
     ADD_WIDGET(Action,Action_WmiQuery,createAction(MM::Text::Action_WmiQuery));
     ADD_WIDGET(Action,Action_Help,createAction(MM::Text::Action_Help));
     ADD_WIDGET(Action,Action_AboutThis,createAction(MM::Text::Action_AboutThis));
+    ADD_WIDGET(Action,Action_TakeSnapshot,createAction(MM::Text::Action_TakeSnapshot,QIcon(MM::Icon::Snapshot)));
 
     makeActionCheckable(Action_SelectColumns);
     makeActionCheckable(Action_Win32_Process);
@@ -63,6 +64,7 @@ void MmUiProxy::initMenus()
     ADD_WIDGET(Menu,Menu_File,createMenu(MM::Text::Menu_File))
     ADD_WIDGET(Menu,Menu_Config,createMenu(MM::Text::Menu_Config))
     ADD_WIDGET(Menu,Menu_QueryEngine,createMenu(MM::Text::Menu_SwitchQueryEngine))
+    ADD_WIDGET(Menu,Menu_Tools,createMenu(MM::Text::Menu_Tools))
     ADD_WIDGET(Menu,Menu_Window,createMenu(MM::Text::Menu_Window))
     ADD_WIDGET(Menu,Menu_About,createMenu(MM::Text::Menu_About))
 }

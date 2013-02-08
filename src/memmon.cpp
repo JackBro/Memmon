@@ -113,6 +113,10 @@ void Memmon::initMenus()
 
     menuBar()->addMenu(USE_WIDGET(Menu,Config));
 
+    /// add tools menu
+    menuBar()->addMenu(USE_WIDGET(Menu,Tools));
+    USE_WIDGET(Menu,Tools)->addAction(USE_WIDGET(Action,TakeSnapshot));
+
     /// add window menu
     USE_WIDGET(Menu,Window)->addAction(USE_WIDGET(Action,MemUtil));
     USE_WIDGET(Menu,Window)->addAction(USE_WIDGET(Action,WmiQuery));
@@ -150,6 +154,7 @@ void Memmon::initToolbars()
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,Stop));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,Clear));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,ShowPopup));
+    USE_WIDGET(ToolBar,Tool)->addAction(USE_WIDGET(Action,TakeSnapshot));
 
     addToolBar(USE_WIDGET(ToolBar,Tool));
 
@@ -192,6 +197,7 @@ void Memmon::initConnections()
 
     connect(USE_WIDGET(Action,Win32_Process),SIGNAL(triggered()),this,SLOT(slot_switchQueryEngine()));
     connect(USE_WIDGET(Action,Win32_PerfFormattedData_PerfProc_Process),SIGNAL(triggered()),this,SLOT(slot_switchQueryEngine()));
+    connect(USE_WIDGET(Action,TakeSnapshot),SIGNAL(triggered()),this,SLOT(slot_takeSnapshot()));
 }
 
 void Memmon::initLateInitVars()
@@ -228,8 +234,10 @@ void Memmon::showSelectColumnDialog()
     if(_selectColumnDialog == 0)
     {
         _selectColumnDialog = new SelectColumnDialog(this);
+        _selectColumnDialog->setQueryEngine(_queryManager->queryEngine());
         _queryManager->setColumnDialog(_selectColumnDialog);
         _selectColumnDialog->setAction(USE_WIDGET(Action,SelectColumns));
+        _selectColumnDialog->reload();
         connect(_selectColumnDialog,SIGNAL(sig_setColumns(QStringList)),this,SLOT(slot_setColumns(QStringList)));
     }
     _selectColumnDialog->show();
@@ -460,10 +468,16 @@ void Memmon::restoreSettings()
     restoreState(Util::SettingMgr::ReadSetting2ByteA(MM::Text::Key_WindowStates));
 
     QString strQueryEngine = Util::SettingMgr::ReadSetting(MM::Text::Key_QueryEngine);
-    if(strQueryEngine.isEmpty())
+    if(strQueryEngine.isEmpty() || strQueryEngine.toLower() == MM::Text::Win32_Process.toLower())
     {
         USE_WIDGET(Action,Win32_Process)->setChecked(true);
         _queryManager->setQueryEngine(USE_WIDGET(Action,Win32_Process)->text());
+    }
+    else
+    {
+        USE_WIDGET(Action,Win32_PerfFormattedData_PerfProc_Process)->setChecked(true);
+        _queryManager->setQueryEngine(USE_WIDGET(Action,Win32_PerfFormattedData_PerfProc_Process)->text());
+
     }
 }
 
@@ -728,4 +742,16 @@ void Memmon::slot_switchQueryEngine()
         _selectColumnDialog->setQueryEngine(strQueryEngine);
         _selectColumnDialog->reload();
     }
+}
+
+void Memmon::slot_takeSnapshot()
+{
+    QString strSaveImage = QFileDialog::getSaveFileName(this,"Save Snapshot ...",".","PNG Files(*.png)");
+    if(strSaveImage.isEmpty())
+    {
+        return;
+    }
+
+    QPixmap pixmap = QPixmap::grabWidget(this,0,0,width(),height());
+    pixmap.save(strSaveImage);
 }
