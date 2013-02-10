@@ -139,6 +139,7 @@ TextDisplayWidget::TextDisplayWidget(QWidget *parent):BaseDisplayWidget(parent)
     setMouseTracking(true);
 
     _label = new QLabel(this);
+    _label->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0,0,0,0);
     mainLayout->addWidget(_label);
@@ -502,6 +503,7 @@ void TimeDisplayWidget::displayTime()
 NumberDisplayWidget::NumberDisplayWidget(QWidget *parent):BaseDisplayWidget(parent)
 {
     _label = new QLabel(this);
+    _label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->setContentsMargins(0,0,0,0);

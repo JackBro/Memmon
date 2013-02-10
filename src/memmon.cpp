@@ -1,6 +1,7 @@
 #include "memmon.h"
 #include "mmdef.h"
 #include "util.h"
+#include "logutil.h"
 
 #include <QSettings>
 #include <QAction>
@@ -387,7 +388,9 @@ void Memmon::exportContents()
     }
 
     QTextStream outStream(&exportFile);
-    outStream << _processTable->contents();
+    QString strContent(_processTable->contents());
+    QMessageBox::information(this,"FYI",strContent);
+//    outStream << strContent;
 
 }
 

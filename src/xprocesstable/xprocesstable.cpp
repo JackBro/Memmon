@@ -232,7 +232,10 @@ QString XProcessItem::contents()
     QString strContents;
     for(int i = 0; i < _widgets.size(); i++)
     {
-        strContents += tr(" %1").arg(_widgets.at(i)->text());
+        if(_widgets[i])
+        {
+            strContents += tr(" %1").arg(_widgets[i]->text());
+        }
     }
     return strContents;
 }
