@@ -358,11 +358,6 @@ void DataChartPrivate::drawGraph(QPainter *painter)
     }
 
     painter->drawPolyline(QPolygonF(graphPots));
-
-
-
-
-
     painter->restore();
 }
 
@@ -432,7 +427,6 @@ DataChartCaption::DataChartCaption(QWidget *parent):QWidget(parent)
 {
     setFixedHeight(NS_DataChart::Constant::CaptionHeight);
 }
-
 
 void DataChartCaption::paintEvent(QPaintEvent *)
 {
