@@ -1,5 +1,78 @@
 #include "pyhistory.h"
 
+#define PYH_STUFF_POINT_COUNT 20
+#define PYH_TOP_SPACE 10
+#define PYH_LEFT_SPACE 10
+#define PYH_WIDGET_SPACE 7
+#define PYH_CAPTION_HEIGHT 17
+#define PYH_PROMPT_RECT_FACTOR 7
+#define PYH_RECT_RADIUS 3
+#define PYH_PIXEL_POINT 2
+
+#define PYH_BG_SCHEME3
+
+#ifdef PYH_BG_SCHEME1
+
+#define PYH_BG_START_COLOR QColor(121,121,121)
+#define PYH_BG_END_COLOR QColor(89,89,89)
+
+#define PYH_BG_CHART_START_COLOR QColor(211,211,211)
+#define PYH_BG_CHART_END_COLOR QColor(189,189,189)
+
+#define PYH_PROMPT_TEXT_COLOR Qt::white
+
+#endif
+
+#ifdef PYH_BG_SCHEME2
+
+#define PYH_BG_START_COLOR QColor(145,145,145)
+#define PYH_BG_END_COLOR QColor(145,145,145)
+
+#define PYH_BG_CHART_START_COLOR QColor(211,211,211)
+#define PYH_BG_CHART_END_COLOR QColor(189,189,189)
+
+#define PYH_PROMPT_TEXT_COLOR Qt::white
+
+#endif
+
+#ifdef PYH_BG_SCHEME3
+
+#define PYH_BG_START_COLOR QColor(212,212,212)
+#define PYH_BG_END_COLOR QColor(189,189,189)
+
+#define PYH_BG_CHART_START_COLOR Qt::white
+#define PYH_BG_CHART_END_COLOR Qt::white
+
+#define PYH_PROMPT_TEXT_COLOR Qt::black
+
+#endif
+
+
+
+#define PYH_CAPTION_COLOR Qt::black
+#define PYH_CAPTION_ALIGNMENT Qt::AlignVCenter|Qt::AlignLeft
+
+#define PYH_CHECK_INDEX(index)   Q_ASSERT(index >= 0 && index < m_nChannelCount);
+#define PYH_USE_ANTIALIASING true
+
+#define EVENT_HANDLER(Event_Func) Event_Func##_Handler
+
+#define PYH_CHART_PEN_COLOR Qt::black
+#define PYH_CHART_PEN_STYLE Qt::DotLine
+#define PYH_CHART_PEN_WIDTH 1
+
+#define PYH_TIME_COUNT 6
+#define PYH_DONT_USE_ANTIALISING painter->setRenderHints(QPainter::Antialiasing|QPainter::HighQualityAntialiasing,false);
+#define PYH_TOTAL_TIME 60000
+
+
+
+#include <QDebug>
+#ifdef DEBUG_VAR
+#undef DEBUG_VAR
+#endif
+#define DEBUG_VAR(VAR) qDebug() << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << #VAR << ":" <<  VAR;
+
 QBrush GetPromptGradient(const QRectF& rect,const QColor& clr)
 {
     QLinearGradient PromptGradient(rect.topLeft(),rect.bottomLeft());
