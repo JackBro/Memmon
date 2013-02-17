@@ -61,10 +61,12 @@ void MmUiProxy::initActions()
     ADD_WIDGET(Action,Action_Help,createAction(MM::Text::Action_Help));
     ADD_WIDGET(Action,Action_AboutThis,createAction(MM::Text::Action_AboutThis));
     ADD_WIDGET(Action,Action_TakeSnapshot,createAction(MM::Text::Action_TakeSnapshot,QIcon(MM::Icon::Snapshot)));
+    ADD_WIDGET(Action,Action_ShowModuleList,createAction(MM::Text::Action_ModuleList,QIcon(MM::Icon::Module)));
 
     makeActionCheckable(Action_SelectColumns);
     makeActionCheckable(Action_Win32_Process);
     makeActionCheckable(Action_Win32_PerfFormattedData_PerfProc_Process);
+    makeActionCheckable(Action_ShowModuleList);
 }
 
 void MmUiProxy::initMenus()

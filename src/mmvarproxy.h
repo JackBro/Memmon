@@ -13,6 +13,8 @@ public:
     Memmon* _parent;
     
     QStringList columns;
+    QString currentProcessName;
+    uint32_t currentPid;
 
 };
 

@@ -24,6 +24,7 @@
 #include "infofetcher/coreusagefetcher.h"
 #include "pyinfopad.h"
 #include "usageinfopad.h"
+#include "moduleinfodock.h"
 
 class Memmon : public QMainWindow
 {
@@ -56,6 +57,7 @@ private:
     void showHelp();
     void showAboutThis();
     void showWMIQueryWindow();
+    void showModuleInfoWindow();
     void showPopupChart();
     void configToolbar(QToolBar* toolbar);
     void populateTable();
@@ -80,6 +82,7 @@ private:
     MemoryMonitorDock* _mmDock;
     LogOutputWindow* _logDock;
     InfoQueryDock* _wmiQueryDock;
+    ModuleInfoDock* _moduleInfoDock;
 
     MmUiProxy* _uiProxy;
     MmVarProxy _varProxy;
@@ -115,6 +118,10 @@ private Q_SLOTS:
     void slot_takeSnapshot();
     void slot_find(const QString& expr);
     void slot_setDataCount(int dataCnt);
+    void slot_setCurrentProcessName(const QString& processName);
+    void slot_setCurrentPid(uint32_t pid);
+    void slot_getProcessModuleInfo(const QString& processName);
+    void slot_parseModuleInfo(const QStringList& moduleList);
 
     friend class MmUiProxy;
 

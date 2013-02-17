@@ -183,6 +183,7 @@ private:
 
 private Q_SLOTS:
     void slot_showPath();
+    void slot_showProperty();
 };
 
 class TimeDisplayWidget : public BaseDisplayWidget

@@ -82,9 +82,10 @@ Q_SIGNALS:
 
 class XProcessTablePrivate : public QWidget
 {
+    Q_DECLARE_PUBLIC(XProcessTable)
     Q_OBJECT
 public:
-    explicit XProcessTablePrivate(QWidget* parent = 0);
+    explicit XProcessTablePrivate(XProcessTable* parent = 0);
 
 
 public:
@@ -130,8 +131,11 @@ private:
     void drawText(QPainter* painter,qreal initX,qreal initY,XProcessItem* item);
 
     QString getDottedString(const QString &originalStr, qreal width);
+    void setItemRect(XProcessItem* item, qreal initY);
+    void fireClickSignals(QMouseEvent* e);
 
 private:
+    XProcessTable* q_ptr;
     typedef QPair<QRectF,XProcessItem*> RectItem;
     QVector<qreal> _allColumnWidth;
     Container<XProcessItem*> _items;
@@ -146,6 +150,7 @@ private:
     int _stopY;
 
 
+    Q_DISABLE_COPY(XProcessTablePrivate)
 private Q_SLOTS:
     void columnWidthChanged(QVector<qreal> allColumnWidth);
     void setViewportX(int x1,int x2);

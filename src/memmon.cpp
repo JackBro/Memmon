@@ -12,6 +12,8 @@
 #include <QDesktopWidget>
 #include <QApplication>
 
+#include "../infofetcher/moduleinfofetcher.h"
+
 #undef USE_WIDGET
 #define USE_WIDGET(WIDGET_NAME,WIDGET_ENUM) _uiProxy->get ## WIDGET_NAME(MmUiProxy :: WIDGET_NAME ## _ ## WIDGET_ENUM)
 
@@ -156,6 +158,7 @@ void Memmon::initToolbars()
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,Clear));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,ShowPopup));
     USE_WIDGET(ToolBar,Tool)->addAction(USE_WIDGET(Action,TakeSnapshot));
+    USE_WIDGET(ToolBar,Tool)->addAction(USE_WIDGET(Action,ShowModuleList));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Label,SearchEditPrompt));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Widget,SearchEdit));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Label,DataCountPrompt));
@@ -206,14 +209,18 @@ void Memmon::initConnections()
     connect(USE_WIDGET(Action,Win32_Process),SIGNAL(triggered()),this,SLOT(slot_switchQueryEngine()));
     connect(USE_WIDGET(Action,Win32_PerfFormattedData_PerfProc_Process),SIGNAL(triggered()),this,SLOT(slot_switchQueryEngine()));
     connect(USE_WIDGET(Action,TakeSnapshot),SIGNAL(triggered()),this,SLOT(slot_takeSnapshot()));
+
+    connect(_processTable, SIGNAL(sig_processClicked(QString)), this, SLOT(slot_setCurrentProcessName(QString)));
+    connect(_processTable, SIGNAL(sig_processClicked(uint32_t)), this , SLOT(slot_setCurrentPid(uint32_t)));
 }
 
 void Memmon::initLateInitVars()
 {
-    _selectColumnDialog = 0;
-    _wmiQueryDock = 0;
-    _mmDock = 0;
-    _logDock = 0;
+    MM_INIT_VAR(_selectColumnDialog,0);
+    MM_INIT_VAR(_wmiQueryDock,0);
+    MM_INIT_VAR(_mmDock,0);
+    MM_INIT_VAR(_logDock,0);
+    MM_INIT_VAR(_moduleInfoDock,0);
 }
 
 QAction* Memmon::createAction(const QString &strText, const QIcon &icon, const QString &strTip)
@@ -295,6 +302,17 @@ void Memmon::showWMIQueryWindow()
     }
 
     showDock(_wmiQueryDock);
+}
+
+void Memmon::showModuleInfoWindow()
+{
+    if(_moduleInfoDock == 0)
+    {
+        _moduleInfoDock = new ModuleInfoDock(this);
+        _moduleInfoDock->setAction(USE_WIDGET(Action,ShowModuleList));
+        addDockWidget(Qt::RightDockWidgetArea, _moduleInfoDock);
+    }
+    showDock(_moduleInfoDock);
 }
 
 void Memmon::showPopupChart()
@@ -557,6 +575,11 @@ void Memmon::slot_actionHandler()
         showSelectColumnDialog();
     }
 
+    if(who == USE_WIDGET(Action,ShowModuleList))
+    {
+        showModuleInfoWindow();
+    }
+
     if(who == USE_WIDGET(Action,LogDock))
     {
         showLogWindow();
@@ -780,5 +803,36 @@ void Memmon::slot_setDataCount(int dataCnt)
     if(_processTable)
     {
         _processTable->setDataCount(dataCnt);
+    }
+}
+
+void Memmon::slot_setCurrentProcessName(const QString &processName)
+{
+    _varProxy.currentProcessName = processName;
+    slot_getProcessModuleInfo(processName);
+}
+
+void Memmon::slot_setCurrentPid(uint32_t pid)
+{
+    _varProxy.currentPid = pid;
+}
+
+void Memmon::slot_getProcessModuleInfo(const QString &processName)
+{
+    LOG_VAR(processName);
+    ModuleInfoFetcher* fetcher = new ModuleInfoFetcher(this);
+    connect(fetcher, SIGNAL(sig_setModuleInfo(QStringList)), this, SLOT(slot_parseModuleInfo(QStringList)));
+    fetcher->setProcessName(_varProxy.currentProcessName);
+    fetcher->setPid(_varProxy.currentPid);
+    fetcher->start();
+}
+
+void Memmon::slot_parseModuleInfo(const QStringList &moduleList)
+{
+//    ModuleInfoFetcher* who = qobject_cast<ModuleInfoFetcher*>(sender());
+//    who->deleteLater();
+    if(_moduleInfoDock)
+    {
+        _moduleInfoDock->setModuleList(moduleList);
     }
 }

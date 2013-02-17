@@ -86,6 +86,8 @@ private:
 
 Q_SIGNALS:
     void sig_removeProcess(uint32_t pid);
+    void sig_processClicked(const QString& strProcessName);
+    void sig_processClicked(uint32_t pid);
 
 };
 
@@ -106,6 +108,9 @@ public:
 
     void setRect(const QRectF& rect);
     QRectF rect() const;
+
+    void setItemRect(const QRectF& rect);
+    QRectF itemRect() const;
 
     void setExpanded(bool expand);
     bool expanded() const;
@@ -146,10 +151,14 @@ public:
 private:
     QWidget* _parent;
     QString _name;
+
     QRectF _expandboxRect;
+    QRectF _thisRect;
+
     bool _expanded;
     uint32_t _pid;
     QIcon _icon;
+
     Container<BaseDisplayWidget*> _widgets;
     Container<XProcessItem* > _children;
 

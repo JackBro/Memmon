@@ -10,6 +10,8 @@
 #include <QToolTip>
 #include <QMessageBox>
 #include <QTime>
+#include <QMenu>
+#include <QAction>
 
 static bool SetFindStyle(QWidget* pWdg, bool find)
 {
@@ -491,7 +493,19 @@ PathDisplayWidget::PathDisplayWidget(QWidget *parent):BaseDisplayWidget(parent)
 
     setLayout(mainLayout);
 
-    connect(_button,SIGNAL(clicked()),this,SLOT(slot_showPath()));
+    QMenu* buttonMenu = new QMenu(this);
+    _button->setMenu(buttonMenu);
+    QAction* pathAct = new QAction(this);
+    pathAct->setText("Locate");
+    QAction* propertyAct = new QAction(this);
+    propertyAct->setText("Show Property");
+
+    // attach actions to menu
+    buttonMenu->addAction(pathAct);
+    buttonMenu->addAction(propertyAct);
+
+    connect(pathAct,SIGNAL(triggered()),this,SLOT(slot_showPath()));
+    connect(propertyAct,SIGNAL(triggered()),this,SLOT(slot_showProperty()));
 }
 
 void PathDisplayWidget::setValue(const QString &value)
@@ -536,6 +550,11 @@ void PathDisplayWidget::slot_showPath()
         return;
     }
     Util::Shell::LocateFile(path);
+}
+
+void PathDisplayWidget::slot_showProperty()
+{
+
 }
 
 /***********************************************/

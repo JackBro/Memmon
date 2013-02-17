@@ -64,6 +64,16 @@ QRectF XProcessItem::rect() const
     return _expandboxRect;
 }
 
+void XProcessItem::setItemRect(const QRectF &rect)
+{
+    _thisRect = rect;
+}
+
+QRectF XProcessItem::itemRect() const
+{
+    return _thisRect;
+}
+
 void XProcessItem::setExpanded(bool expand)
 {
     _expanded = expand;
@@ -508,7 +518,7 @@ void XScrollArea::layoutVScrollBar(int hValue)
 /*******************************************/
 /*! XProcessTablePrivate                   */
 /*******************************************/
-XProcessTablePrivate::XProcessTablePrivate(QWidget *parent):QWidget(parent)
+XProcessTablePrivate::XProcessTablePrivate(XProcessTable *parent):QWidget(parent),q_ptr(parent)
 {
     _startX = 0;
     _stopX = 0;
@@ -557,6 +567,8 @@ void XProcessTablePrivate::mousePressEvent(QMouseEvent *e)
             break;
         }
     }
+
+    fireClickSignals(e);
     update();
 }
 
@@ -746,6 +758,8 @@ void XProcessTablePrivate::layoutWidget(XProcessItem *item,qreal& initY)
         return ;
     }
 
+    setItemRect(item, initY);
+
     if(_allColumnWidth.size() > 0)
     {
         qreal initX = 0;
@@ -906,6 +920,28 @@ QString XProcessTablePrivate::getDottedString(const QString &originalStr, qreal 
         if(fontMetrics().width(str) >= width)
         {
             return str;
+        }
+    }
+}
+
+void XProcessTablePrivate::setItemRect(XProcessItem *item, qreal initY)
+{
+    QPointF topLeft(0, initY);
+    QPointF bottomRight(width(), initY + XPT::Constant::RowHeight);
+    QRectF rect(topLeft, bottomRight);
+    item->setItemRect(rect);
+}
+
+void XProcessTablePrivate::fireClickSignals(QMouseEvent *e)
+{
+    const int proCnt = _items.size();
+    for(int i = 0; i < proCnt; i++)
+    {
+        const XProcessItem* item = _items.at(i);
+        if(item->itemRect().contains(e->pos()))
+        {
+            emit q_ptr->sig_processClicked(item->pid());
+            emit q_ptr->sig_processClicked(item->name());
         }
     }
 }

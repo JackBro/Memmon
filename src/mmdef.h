@@ -87,6 +87,7 @@ namespace MM
         DECLARE_STRING(Action_AboutThis,"About This")
         DECLARE_STRING(Action_Help,"Help")
         DECLARE_STRING(Action_TakeSnapshot,"Snapshot")
+        DECLARE_STRING(Action_ModuleList,"Show Module List")
 
         // qmenu
         DECLARE_STRING(Menu_File,"File")
@@ -146,6 +147,7 @@ namespace MM
         DECLARE_STRING(Clear,":/images/clear.png")
         DECLARE_STRING(Save,":/images/save.png")
         DECLARE_STRING(Process,":/images/process.png")
+        DECLARE_STRING(Module,":/images/process.png")
         DECLARE_STRING(StartQuery,":/images/start_query.png")
         DECLARE_STRING(StopQuery,":/images/stop_query.png")
         DECLARE_STRING(Open,":/images/open.png")

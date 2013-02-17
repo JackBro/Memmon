@@ -101,6 +101,7 @@ public:
         Action_Win32_Process,
         Action_Win32_PerfFormattedData_PerfProc_Process,
         Action_TakeSnapshot,
+        Action_ShowModuleList,
         Action_MemUtil,
         Action_LogDock,
         Action_WmiQuery,
