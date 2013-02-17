@@ -128,7 +128,7 @@ Container<BaseDisplayWidget*> XProcessItem::getColumnWidgets() const
 
 void XProcessItem::updateInfo(const QStringList &infoList)
 {
-    Q_ASSERT(infoList.size() == _widgets.size());
+//    Q_ASSERT(infoList.size() == _widgets.size());
     QStringList newInfoList(infoList);
 //    newInfoList.removeAt(_nameColumnIndex);
 //    newInfoList.removeAt(_pidColumnIndex);
@@ -938,7 +938,7 @@ void XProcessTablePrivate::fireClickSignals(QMouseEvent *e)
     for(int i = 0; i < proCnt; i++)
     {
         const XProcessItem* item = _items.at(i);
-        if(item->itemRect().contains(e->pos()))
+        if(item && item->itemRect().contains(e->pos()))
         {
             emit q_ptr->sig_processClicked(item->pid());
             emit q_ptr->sig_processClicked(item->name());

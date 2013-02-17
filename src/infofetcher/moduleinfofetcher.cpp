@@ -20,15 +20,23 @@ void ModuleInfoFetcher::run()
     QStringList resultList = strResult.split('\n');
     resultList.pop_front();
     resultList.pop_back();
-    QStringList moduleList = resultList.at(0).split(',');
-    moduleList.pop_front();
-    moduleList.pop_front();
 
-    const int kModuleCount = moduleList.size();
-    moduleList[0] = moduleList[0].right(moduleList[0].length() - 1);
-    moduleList[kModuleCount - 1] = moduleList[kModuleCount -1].left(moduleList[kModuleCount - 1].length() - 2);
+    if(!resultList.isEmpty())
+    {
+        QStringList moduleList = resultList.at(0).split(',');
+        moduleList.pop_front();
+        moduleList.pop_front();
 
-    emit sig_setModuleInfo(moduleList);
+        const int kModuleCount = moduleList.size();
+
+        if(kModuleCount > 0)
+        {
+            moduleList[0] = moduleList[0].right(moduleList[0].length() - 1);
+            moduleList[kModuleCount - 1] = moduleList[kModuleCount -1].left(moduleList[kModuleCount - 1].length() - 2);
+        }
+
+        emit sig_setModuleInfo(moduleList);
+    }
 }
 
 
