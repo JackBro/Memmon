@@ -118,9 +118,7 @@ Container<BaseDisplayWidget*> XProcessItem::getColumnWidgets() const
 
 void XProcessItem::updateInfo(const QStringList &infoList)
 {
-
-//    return;
-//    Q_ASSERT(infoList.size() == _widgets.size());
+    Q_ASSERT(infoList.size() == _widgets.size());
     QStringList newInfoList(infoList);
 //    newInfoList.removeAt(_nameColumnIndex);
 //    newInfoList.removeAt(_pidColumnIndex);
@@ -238,6 +236,28 @@ QString XProcessItem::contents()
         }
     }
     return strContents;
+}
+
+void XProcessItem::find(const QString &expr)
+{
+    const int widgetCnt = _widgets.size();
+    for(int i = 0; i < widgetCnt; i++)
+    {
+        _widgets[i]->find(expr);
+    }
+}
+
+void XProcessItem::setDataCount(int dataCnt)
+{
+    const int widgetCnt = _widgets.size();
+    for(int i = 0;i < widgetCnt; i++)
+    {
+        if(_widgets[i]->widgetType() == Bytes)
+        {
+            BytesDisplayWidget* widget = dynamic_cast<BytesDisplayWidget*>(_widgets[i]);
+            widget->setDataCount(dataCnt);
+        }
+    }
 }
 
 /*******************************************/
@@ -372,6 +392,18 @@ QByteArray XProcessTable::contents()
 {
     Q_D(XProcessTable);
     return d->contents();
+}
+
+void XProcessTable::find(const QString &expr)
+{
+    Q_D(XProcessTable);
+    d->find(expr);
+}
+
+void XProcessTable::setDataCount(int dataCnt)
+{
+    Q_D(XProcessTable);
+    d->setDataCount(dataCnt);
 }
 
 ///
@@ -532,6 +564,7 @@ void XProcessTablePrivate::resizeEvent(QResizeEvent *e)
 {
     relayout();
     e->accept();
+    update();
 }
 
 ///
@@ -690,7 +723,6 @@ void XProcessTablePrivate::relayout()
 
 void XProcessTablePrivate::layoutWidgets(const Container<XProcessItem*> items,qreal& initY)
 {
-
     qreal initX = 0;
 
     if(!_allColumnWidth.isEmpty())
@@ -702,6 +734,7 @@ void XProcessTablePrivate::layoutWidgets(const Container<XProcessItem*> items,qr
     {
         layoutWidget(items.at(i),initY);
     }
+
 }
 
 void XProcessTablePrivate::layoutWidget(XProcessItem *item,qreal& initY)
@@ -763,7 +796,6 @@ void XProcessTablePrivate::layoutWidget(XProcessItem *item,qreal& initY)
         initY += XPT::Constant::RowHeight;
 
         setMinimumHeight(initY);
-
     }
 }
 
@@ -793,10 +825,12 @@ void XProcessTablePrivate::drawExpandBox(QPainter* painter,const QRectF& expandb
 void XProcessTablePrivate::drawExpandBoxHandles(QPainter *painter, const QRectF &expandboxRect, bool expand)
 {
     painter->setPen(XPT::Color::ExpandBoxPen);
+
     // draw horizontal handle
     QPointF hLeftPoint(expandboxRect.topLeft().x() + XPT::Constant::BoxExtraSpace,expandboxRect.center().y());
     QPointF hRightPoint(expandboxRect.topRight().x() - XPT::Constant::BoxExtraSpace,expandboxRect.center().y());
     painter->drawLine(hLeftPoint,hRightPoint);
+
     // draw vertical handle
     if(!expand)
     {
@@ -809,7 +843,6 @@ void XProcessTablePrivate::drawExpandBoxHandles(QPainter *painter, const QRectF 
 void XProcessTablePrivate::drawIcon(QPainter *painter, qreal initX, qreal initY, XProcessItem *item)
 {
     qreal iconX = initX + XPT::Constant::ExtraSpace;
-    qreal iconY = initY + XPT::Constant::RowHeight/2 - XPT::Constant::IconSize.height()/2;
 
     if(item->hasChild())
     {
@@ -817,7 +850,7 @@ void XProcessTablePrivate::drawIcon(QPainter *painter, qreal initX, qreal initY,
     }
     else
     {
-        iconX + XPT::Constant::BoxExtraSpace;
+        iconX += XPT::Constant::BoxExtraSpace;
     }
 
     QPointF topLeft(iconX + XPT::Constant::IconExtraSpace,initY + XPT::Constant::IconExtraSpace);
@@ -943,4 +976,22 @@ QByteArray XProcessTablePrivate::contents()
     }
     array.append(strContents);
     return array;
+}
+
+void XProcessTablePrivate::find(const QString &expr)
+{
+    const int widgetCnt = _items.size();
+    for(int i = 0; i < widgetCnt; i++)
+    {
+        _items[i]->find(expr);
+    }
+}
+
+void XProcessTablePrivate::setDataCount(int dataCnt)
+{
+    const int widgetCnt = _items.size();
+    for(int i = 0; i < widgetCnt; i++)
+    {
+        _items[i]->setDataCount(dataCnt);
+    }
 }

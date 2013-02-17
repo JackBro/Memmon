@@ -99,6 +99,21 @@ void QueryManager::stopQuery()
     emit sig_queryStopped();
 }
 
+void QueryManager::createProcessItem(const QString &processName, uint32_t pid, const QStringList& resultInfo)
+{
+    XProcessItem* processItem = new XProcessItem((QWidget*)_table->d());
+    processItem->setName(processName);
+    processItem->setPidColumnIndex(_pidColumnIndex);
+    processItem->setNameColumnIndex(_nameColumnIndex);
+    processItem->createWidgetByColumns(_columns);
+    processItem->setPid(pid);
+    processItem->updateInfo(resultInfo);
+    processItem->find(_findExpr);
+    _table->addProcess(processItem);
+    _processItems.insert(pid, processItem);
+
+}
+
 ///
 /// PUBLIC FUNCTIONS
 ///
@@ -202,6 +217,11 @@ QString QueryManager::queryEngine() const
     return _queryEngine->queryEngine();
 }
 
+void QueryManager::setFindExpr(const QString &expr)
+{
+    _findExpr = expr;
+}
+
 ///
 /// PRIVATE SLOT FUNCTIONS
 ///
@@ -272,16 +292,7 @@ void QueryManager::slot_queryResultReady(const QByteArray &results)
 
             if(!_processItems.contains(pid))
             {
-                XProcessItem* processItem = new XProcessItem((QWidget*)_table->d());
-                processItem->setName(processName);
-                processItem->setPidColumnIndex(_pidColumnIndex);
-                processItem->setNameColumnIndex(_nameColumnIndex);
-                processItem->createWidgetByColumns(_columns);
-                processItem->setPid(innerResultList.at(_pidColumnIndex).toUInt());
-                processItem->updateInfo(innerResultList);
-                _table->addProcess(processItem);
-                _processItems.insert(pid,processItem);
-
+                createProcessItem(processName, pid, innerResultList);
                 _deadPids.push_back(pid);
 
             }

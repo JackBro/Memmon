@@ -27,6 +27,7 @@ protected:
     virtual T value() const = 0;
     virtual WidgetType widgetType() const = 0;
     virtual QString text() const = 0;
+    virtual bool find(const QString& expr) = 0;
 
 protected:
     T _value;
@@ -43,6 +44,7 @@ public:
     virtual void setValue(const QString &value);
     virtual QString value() const;
     virtual WidgetType widgetType() const;
+    virtual bool find(const QString& expr);
     inline void setColumnName(const QString& strName){ _columnName = strName; }
     inline QString columnName() const { return _columnName; }
     inline void setProcessName(const QString& strProcessName){ _processName = strProcessName; }
@@ -66,6 +68,7 @@ public:
     QString value() const;
     WidgetType widgetType() const;
     QString text() const;
+    bool find(const QString &expr);
 
 protected:
     bool event(QEvent *);
@@ -92,6 +95,8 @@ public:
     QIcon icon() const;
 
     QString text() const;
+
+    bool find(const QString &expr);
 
 private:
     QIcon _icon;
@@ -130,10 +135,15 @@ public:
 
     QString text() const;
 
+    bool find(const QString &expr);
+
     void clear();
 
     void showPopup(bool show);
     bool isPopupShown() const;
+
+    void setDataCount(int cnt);
+    int dataCount() const;
 
 protected:
     void enterEvent(QEvent *);
@@ -141,6 +151,8 @@ protected:
 
 private:
     void showDataChart();
+    inline void updateChartCaption();
+    void updateBufferSize();
 
     QLabel* _label;
     QList<qreal> _data;
@@ -148,7 +160,7 @@ private:
     bool _showPopup;
     bool _enter;
 
-
+    int _dataCnt;
 };
 
 class PathDisplayWidget : public BaseDisplayWidget
@@ -163,6 +175,7 @@ public:
     WidgetType widgetType() const;
 
     QString text() const;
+    bool find(const QString &expr);
 
 
 private:
@@ -202,6 +215,7 @@ public:
     QString value() const;
     WidgetType widgetType() const;
     QString text() const;
+    bool find(const QString &expr);
 
 private:
     QLabel* _label;

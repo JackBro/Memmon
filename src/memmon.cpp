@@ -156,10 +156,17 @@ void Memmon::initToolbars()
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,Clear));
     USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(ToolButton,ShowPopup));
     USE_WIDGET(ToolBar,Tool)->addAction(USE_WIDGET(Action,TakeSnapshot));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Label,SearchEditPrompt));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Widget,SearchEdit));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(Label,DataCountPrompt));
+    USE_WIDGET(ToolBar,Tool)->addWidget(USE_WIDGET(SpinBox,DataCount));
+
 
     addToolBar(USE_WIDGET(ToolBar,Tool));
 
     connect(USE_WIDGET(ComboBox,UpdateInterval),SIGNAL(currentIndexChanged(int)),this,SLOT(slot_updateIntervalChanged(int)));
+    connect(USE_WIDGET(Widget,SearchEdit),SIGNAL(textChanged(QString)),this,SLOT(slot_find(QString)));
+    connect(USE_WIDGET(SpinBox,DataCount),SIGNAL(valueChanged(int)),this,SLOT(slot_setDataCount(int)));
 }
 
 void Memmon::initUsageFetcher()
@@ -757,4 +764,21 @@ void Memmon::slot_takeSnapshot()
 
     QPixmap pixmap = QPixmap::grabWidget(this,0,0,width(),height());
     pixmap.save(strSaveImage);
+}
+
+void Memmon::slot_find(const QString &expr)
+{
+    if(_processTable)
+    {
+        _processTable->find(expr);
+    }
+    _queryManager->setFindExpr(expr);
+}
+
+void Memmon::slot_setDataCount(int dataCnt)
+{
+    if(_processTable)
+    {
+        _processTable->setDataCount(dataCnt);
+    }
 }

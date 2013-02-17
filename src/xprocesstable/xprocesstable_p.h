@@ -96,6 +96,10 @@ public:
 
     QByteArray contents();
 
+    void find(const QString& expr);
+
+    void setDataCount(int dataCnt);
+
 protected:
     void paintEvent(QPaintEvent* e);
     void mousePressEvent(QMouseEvent* e);

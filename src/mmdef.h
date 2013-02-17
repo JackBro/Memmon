@@ -66,6 +66,8 @@ namespace MM
         DECLARE_STRING(Label_ProcessList,"Process List:")
         DECLARE_STRING(Label_Columns,"Columns:")
         DECLARE_STRING(Label_UpdateInterval,"Update Interval:")
+        DECLARE_STRING(Label_Search,"Search:")
+        DECLARE_STRING(Label_DataCount,"Data Count:")
 
         DECLARE_STRING(Info_AboutThis,"<h1>Memory Monitor</h1><p><b>Copyright by Kimtaikee 2012</b>")
 

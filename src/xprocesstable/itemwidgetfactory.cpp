@@ -11,6 +11,20 @@
 #include <QMessageBox>
 #include <QTime>
 
+static bool SetFindStyle(QWidget* pWdg, bool find)
+{
+    if(find)
+    {
+        pWdg->setStyleSheet("background-color:rgb(243,180,33);");
+    }
+    else
+    {
+        pWdg->setStyleSheet("background-color:transparent");
+    }
+
+    return find;
+}
+
 QStringList ItemWidgetFactory::TextList = QStringList() << "Caption" << "ParentProcessId"
                                                         << "ElapsedTime" << "HandleCount"
                                                         << "ProcessId" ;
@@ -131,6 +145,12 @@ WidgetType BaseDisplayWidget::widgetType() const
 {
     return Text;
 }
+
+bool BaseDisplayWidget::find(const QString &expr)
+{
+    return false;
+}
+
 /***********************************************/
 /*! TextDisplayWidget                          */
 /***********************************************/
@@ -172,6 +192,18 @@ WidgetType TextDisplayWidget::widgetType() const
 QString TextDisplayWidget::text() const
 {
     return _label->text();
+}
+
+bool TextDisplayWidget::find(const QString &expr)
+{
+    if(expr.isEmpty())
+    {
+        SetFindStyle(_label, false);
+    }
+    else
+    {
+        return SetFindStyle(_label, _label->text().contains(expr, Qt::CaseInsensitive));
+    }
 }
 
 bool TextDisplayWidget::event(QEvent *e)
@@ -241,6 +273,17 @@ QString IconDisplayWidget::text() const
     _label->text();
 }
 
+bool IconDisplayWidget::find(const QString &expr)
+{
+    if(expr.isEmpty())
+    {
+        SetFindStyle(_label, false);
+    }
+    else
+    {
+        return SetFindStyle(_label, _label->text().contains(expr, Qt::CaseInsensitive));
+    }
+}
 /***********************************************/
 /*! ProgressWidget                             */
 /***********************************************/
@@ -283,6 +326,7 @@ QString ProgressDisplayWidget::text() const
 {
     return tr("%1").arg(_pgsBar->value());
 }
+
 /***********************************************/
 /*! BytesDisplayWidget                         */
 /***********************************************/
@@ -298,6 +342,7 @@ BytesDisplayWidget::BytesDisplayWidget(QWidget *parent):BaseDisplayWidget(parent
 
     _showPopup = false;
     _enter = false;
+    _dataCnt = DefaultDataCount;
 }
 
 void BytesDisplayWidget::setValue(const QString &value)
@@ -310,10 +355,7 @@ void BytesDisplayWidget::setValue(const QString &value)
         QString strValue = MM_Util::getDecentSize(nValue);
         _label->setText(strValue);
 
-        if(_data.size() > DefaultDataCount)
-        {
-            _data.pop_front();
-        }
+        updateBufferSize();
         _data.push_back(nValue);
 
         if(_enter)
@@ -343,6 +385,18 @@ QString BytesDisplayWidget::text() const
     return strText;
 }
 
+bool BytesDisplayWidget::find(const QString &expr)
+{
+    if(expr.isEmpty())
+    {
+        SetFindStyle(_label, false);
+    }
+    else
+    {
+        return SetFindStyle(_label, _label->text().contains(expr, Qt::CaseInsensitive));
+    }
+}
+
 void BytesDisplayWidget::clear()
 {
     _data.clear();
@@ -357,6 +411,17 @@ void BytesDisplayWidget::showPopup(bool show)
 bool BytesDisplayWidget::isPopupShown() const
 {
     return _showPopup;
+}
+
+void BytesDisplayWidget::setDataCount(int cnt)
+{
+    _dataCnt = cnt;
+    updateChartCaption();
+}
+
+int BytesDisplayWidget::dataCount() const
+{
+    return _dataCnt;
 }
 
 void BytesDisplayWidget::enterEvent(QEvent *e)
@@ -379,9 +444,7 @@ void BytesDisplayWidget::showDataChart()
         QPoint globalTopLeft = mapToGlobal(rect().topLeft());
         QRect globalRect(globalTopLeft,QPoint(globalTopLeft.x() + width(),globalTopLeft.y() + height()));
 
-        QString strCaption;
-        strCaption = tr("%1:%2").arg(_processName).arg(_columnName);
-        DataChart::instance()->setCaption(strCaption);
+        updateChartCaption();
         DataChart::instance()->setData(_data);
 
         if(DataChart::instance()->isVisible())
@@ -395,6 +458,21 @@ void BytesDisplayWidget::showDataChart()
     }
 }
 
+inline void BytesDisplayWidget::updateChartCaption()
+{
+    QString strCaption;
+    strCaption = tr("%1:%2  Buffer Size:%3").arg(_processName).arg(_columnName).arg(_dataCnt);
+    DataChart::instance()->setCaption(strCaption);
+}
+
+void BytesDisplayWidget::updateBufferSize()
+{
+    while(_data.size() > _dataCnt)
+    {
+        _data.pop_front();
+    }
+}
+
 /***********************************************/
 /*! PathDisplayWidget                         */
 /***********************************************/
@@ -405,7 +483,7 @@ PathDisplayWidget::PathDisplayWidget(QWidget *parent):BaseDisplayWidget(parent)
     _button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     _button->setIcon(QIcon(":/images/open.png"));
     _button->setAutoRaise(true);
-    _button->setAutoRepeat(true);
+    _button->setAutoRepeat(false);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0,0,0,0);
@@ -435,6 +513,18 @@ WidgetType PathDisplayWidget::widgetType() const
 QString PathDisplayWidget::text() const
 {
     return _button->text();
+}
+
+bool PathDisplayWidget::find(const QString &expr)
+{
+    if(expr.isEmpty())
+    {
+        SetFindStyle(_button, false);
+    }
+    else
+    {
+        return SetFindStyle(_button, _button->text().contains(expr, Qt::CaseInsensitive));
+    }
 }
 
 void PathDisplayWidget::slot_showPath()
@@ -532,6 +622,18 @@ WidgetType NumberDisplayWidget::widgetType() const
 QString NumberDisplayWidget::text() const
 {
     return _label->text();
+}
+
+bool NumberDisplayWidget::find(const QString &expr)
+{
+    if(expr.isEmpty())
+    {
+        SetFindStyle(_label, false);
+    }
+    else
+    {
+        return SetFindStyle(_label, _label->text().contains(expr, Qt::CaseInsensitive));
+    }
 }
 
 

@@ -1,4 +1,6 @@
 #include "mmuiproxy.h"
+#include "../ctrl/searchedit.h"
+
 
 MmUiProxy::MmUiProxy(Memmon *parent) :
     QObject((QWidget*)parent),_parent(parent)
@@ -9,6 +11,7 @@ MmUiProxy::MmUiProxy(Memmon *parent) :
     initMenus();
     initToolBars();
     initComboBoxes();
+    initSpinBoxes();
     initToolButtons();
 }
 
@@ -29,6 +32,9 @@ void MmUiProxy::initWidgets()
 
     PYHistory* memHistory = new PYHistory((QWidget*)_parent);
     ADD_WIDGET(Widget,Widget_MemUsageHistory,memHistory)
+
+    SearchEdit* searchEdit = new SearchEdit((QWidget*)_parent);
+    ADD_WIDGET(Widget,Widget_SearchEdit,searchEdit)
 }
 
 void MmUiProxy::initLabels()
@@ -38,6 +44,8 @@ void MmUiProxy::initLabels()
     ADD_WIDGET(Label,Label_TotalProcessCount,createLabel(MM::Text::Empty))
     ADD_WIDGET(Label,Label_RunningServiceCount,createLabel(MM::Text::Empty))
     ADD_WIDGET(Label,Label_RunningDriverCount,createLabel(MM::Text::Empty))
+    ADD_WIDGET(Label,Label_SearchEditPrompt,createLabel(MM::Text::Label_Search))
+    ADD_WIDGET(Label,Label_DataCountPrompt,createLabel(MM::Text::Label_DataCount))
 }
 
 void MmUiProxy::initActions()
@@ -86,6 +94,11 @@ void MmUiProxy::initToolButtons()
     ADD_WIDGET(ToolButton,ToolButton_Clear,createToolButton(MM::Text::TB_ClearHistoryData,QIcon(MM::Icon::Clear)))
     ADD_WIDGET(ToolButton,ToolButton_ShowPopup,createToolButton(MM::Text::TB_ShowPopupChart,QIcon(MM::Icon::Chart)))
     ADD_WIDGET(ToolButton,ToolButton_GeneralInfo,createToolButton(MM::Text::TB_GeneralInfo,QIcon(MM::Icon::GeneralInfo)))
+}
+
+void MmUiProxy::initSpinBoxes()
+{
+    ADD_WIDGET(SpinBox,SpinBox_DataCount,createSpinBox())
 }
 
 void MmUiProxy::makeActionCheckable(Action act)
@@ -146,6 +159,13 @@ QLabel* MmUiProxy::createLabel(const QString &strText)
 QComboBox* MmUiProxy::createComboBox()
 {
     QComboBox* box = new QComboBox((QWidget*)_parent);
+    return box;
+}
+
+QSpinBox* MmUiProxy::createSpinBox()
+{
+    QSpinBox* box = new QSpinBox((QWidget*)_parent);
+    box->setRange(10,1000);
     return box;
 }
 

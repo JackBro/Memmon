@@ -54,6 +54,10 @@ public:
 
     QByteArray contents();
 
+    void find(const QString& expr);
+
+    void setDataCount(int dataCnt);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *);
 
@@ -134,6 +138,10 @@ public:
     void showPopup(bool show);
 
     QString contents();
+
+    void find(const QString& expr);
+
+    void setDataCount(int dataCnt);
 
 private:
     QWidget* _parent;

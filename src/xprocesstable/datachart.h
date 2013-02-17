@@ -7,34 +7,6 @@
 #include <QTimer>
 #include <QPushButton>
 
-namespace NS_DataChart
-{
-    namespace Constant
-    {
-        const int CaptionHeight = 20;
-        const int LittleRectWidth = 2;
-        const int AngleEdgeLength = 3;
-        const int BottomSpace = 20;
-        const int ExtraSpace = 3;
-        const int VerticalGridCount = 2;
-        const int LeftSpace = 20;
-        const int StayDuration = 10000; // 10 seconds
-    }
-
-    namespace Color
-    {
-        const QColor BackgroundColor = QColor(153,153,153);
-        const QColor CaptionColor = Qt::white;
-
-        const QColor ChartStartColor = QColor(243,243,243);
-        const QColor ChartStopColor = QColor(211,211,211);
-
-        const QColor LegendColor = QColor(78,78,78);
-
-        const QColor LittleRectColor = QColor(88,88,88);
-        const QColor GraphColor = QColor(111,111,111);
-    }
-}
 class DataChartCaption;
 class DataChartPrivate;
 class DataChart : public QWidget

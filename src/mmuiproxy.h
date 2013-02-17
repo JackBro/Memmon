@@ -12,6 +12,7 @@
 #include <QMenu>
 #include <QPushButton>
 #include <QToolButton>
+#include <QSpinBox>
 
 #include "../ctrl/pyprog.h"
 #include "../ctrl/pymenu.h"
@@ -118,7 +119,9 @@ public:
         Label_UpdateInterval,
         Label_TotalProcessCount,
         Label_RunningServiceCount,
-        Label_RunningDriverCount
+        Label_RunningDriverCount,
+        Label_SearchEditPrompt,
+        Label_DataCountPrompt
     };
 
     enum Widget
@@ -126,7 +129,8 @@ public:
         Widget_CpuIndicator,
         Widget_MemIndicator,
         Widget_CpuUsageHistory,
-        Widget_MemUsageHistory
+        Widget_MemUsageHistory,
+        Widget_SearchEdit
     };
 
     enum ToolButton
@@ -143,6 +147,11 @@ public:
         ComboBox_UpdateInterval
     };
 
+    enum SpinBox
+    {
+        SpinBox_DataCount
+    };
+
     explicit MmUiProxy(Memmon *parent = 0);
     
     ADD_WIDGET_TYPE(Widget)
@@ -152,6 +161,7 @@ public:
     ADD_WIDGET_TYPE(ToolBar)
     ADD_WIDGET_TYPE(ToolButton)
     ADD_WIDGET_TYPE(ComboBox)
+    ADD_WIDGET_TYPE(SpinBox)
 
 private:
     void initWidgets();
@@ -161,6 +171,7 @@ private:
     void initToolBars();
     void initComboBoxes();
     void initToolButtons();
+    void initSpinBoxes();
 
     inline void makeActionCheckable(Action act);
 
@@ -175,6 +186,7 @@ private:
     DECLARE_CREATE_WIDGET_FUNC(PushButton,(const QString& strText, const QIcon& icon = QIcon()))
     DECLARE_CREATE_WIDGET_FUNC(Label,(const QString& strText = QString()))
     DECLARE_CREATE_WIDGET_FUNC(ComboBox,())
+    DECLARE_CREATE_WIDGET_FUNC(SpinBox,())
     DECLARE_CREATE_WIDGET_FUNC(LineEdit,())
     DECLARE_CREATE_WIDGET_FUNC(Timer,(int interval = 0, bool singleShot = false))
     DECLARE_CREATE_WIDGET_FUNC(ToolButton,(const QString& strText, const QIcon& icon = QIcon()))

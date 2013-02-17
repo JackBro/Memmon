@@ -29,12 +29,15 @@ public:
     void setQueryEngine(const QString& strQueryEngine);
     QString queryEngine() const;
 
+    void setFindExpr(const QString& expr);
+
 private:
     void initVars();
     void getPidColumnIndex(const QString& str);
     void notifyQueryError();
     void notifyPidColumnNameChanged(const QString& strQueryEngin);
     void stopQuery();
+    void createProcessItem(const QString& processName, uint32_t pid, const QStringList& resultInfo);
 private:
 
     QStringList _columns;
@@ -53,6 +56,7 @@ private:
     bool _firstRun;
 
     QString _pidColumnName;
+    QString _findExpr;
 
 private Q_SLOTS:
     void slot_doQuery();

@@ -113,6 +113,8 @@ private Q_SLOTS:
     void slot_safeQuit();
     void slot_switchQueryEngine();
     void slot_takeSnapshot();
+    void slot_find(const QString& expr);
+    void slot_setDataCount(int dataCnt);
 
     friend class MmUiProxy;
 
