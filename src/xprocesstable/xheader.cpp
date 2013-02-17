@@ -574,8 +574,6 @@ void XHeader::leaveEvent(QEvent *e)
 
 void XHeader::resizeEvent(QResizeEvent *)
 {
-    qDebug() << "Enter XHeader::resizeEvent";
-
     if(_isAutoAdjust)
     {
         QVector<qreal> textRatios;
@@ -615,8 +613,6 @@ void XHeader::resizeEvent(QResizeEvent *)
         // emit columnWidthChanged signal
         emit columnWidthChanged(allColumnWidth);
     }
-    qDebug() << "Leave XHeader::resizeEvent";
-
 }
 
 /*!
